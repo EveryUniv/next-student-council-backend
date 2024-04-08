@@ -7,13 +7,13 @@
 <ul>
   <li>Spring Boot</li>
   <li>Redis</li>
-  <li>Mysql 8.0</li>
-  <li>Kafka</li>
-  <li>Jookeeper</li>
+  <li>MySQL 8.0</li>
+  <li>Apache Kafka</li>
+  <li>Apache Zookeeper</li>
   <li>nGrinder (추후 적용 예정)</li>
 </ul>
 
-<h4>아키텍처 (수정 예정)</h4>
+### 아키텍처 (수정 예정)
 ![image](https://github.com/EveryUniv/next-student-council-backend/assets/112674303/f303e61c-8c02-470f-9f15-8394c4058acc)
 
 
