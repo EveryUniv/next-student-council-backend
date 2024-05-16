@@ -5,21 +5,20 @@
 <section>
     <div class="py-5 text-center">
         <h2>배너</h2>
-        <div class="d-flex gap-2 justify-content-center py-5">
-            <p class="btn btn-secondary rounded-pill px-3" type="button">
-                <a th:href="@{|/manage|}" style="color: white">홈으로</a>
-            </p>
-        </div>
+        <!--        <div class="d-flex gap-2 justify-content-center py-5">-->
+        <!--            <p class="btn btn-secondary rounded-pill px-3" type="button">-->
+        <!--                <a th:href="@{|/manage|}" style="color: white">홈으로</a>-->
+        <!--            </p>-->
+        <!--        </div>-->
     </div>
 
-    <div class="alert alert-info d-flex align-items-center" role="alert">
-        <div>
-            배너는 최신순으로 정렬되어 있습니다.
+    <!--    <hr class="my-4">-->
+    <div class="container">
+        <div class="alert alert-info d-flex align-items-center" role="alert">
+            <div>
+                배너는 최신순으로 정렬되어 있습니다.
+            </div>
         </div>
-    </div>
-
-    <hr class="my-4">
-    <div>
         <form method="post" th:object="${object}" th:action="@{|/manage/banner/add|}" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="banner-file" class="form-label">배너 파일</label>
