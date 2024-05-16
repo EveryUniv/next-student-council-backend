@@ -5,38 +5,38 @@
 <section>
     <div class="py-5 text-center">
         <h2>귀향버스 목록</h2>
-        <div class="d-flex gap-2 justify-content-center py-5">
-            <p class="btn btn-secondary rounded-pill px-3" type="button">
-                <a th:href="@{|/manage|}" style="color: white">홈으로</a>
-            </p>
-        </div>
+        <!--        <div class="d-flex gap-2 justify-content-center py-5">-->
+        <!--            <p class="btn btn-secondary rounded-pill px-3" type="button">-->
+        <!--                <a th:href="@{|/manage|}" style="color: white">홈으로</a>-->
+        <!--            </p>-->
+        <!--        </div>-->
     </div>
 
-    <hr class="my-4">
-    <h4>버스 신규 등록</h4>
-    <div>
+    <div class="container">
+        <hr class="my-4">
+        <h4 class="my-3">버스 신규 등록</h4>
         <form th:action="@{/manage/home-bus}" th:method="POST" style="display:flex">
             <div class="input-group mb-3">
                 <a>라벨 : </a>
-                <div class="label_input">
+                <div class="label_input px-2">
                     <input type="text" name="label" placeholder="대전1호" >
                 </div>
             </div>
             <div class="input-group mb-3">
                 <a>경로 : </a>
-                <div class="path_input">
+                <div class="path_input px-2">
                     <input type="text" name="path" placeholder="죽전,서울,대전" >
                 </div>
             </div>
             <div class="input-group mb-3">
                 <a>목적지 : </a>
-                <div class="destination_input">
+                <div class="destination_input px-2">
                     <input type="text" name="destination" placeholder="대전" >
                 </div>
             </div>
             <div class="input-group mb-3">
                 <a>총 좌석 : </a>
-                <div class="total_seats_input">
+                <div class="total_seats_input px-2">
                     <input type="text" name="totalSeats" placeholder="45" >
                 </div>
             </div>
@@ -44,12 +44,11 @@
                 <input type="submit" class="btn btn-primary" id="btn-login" value="등록">
             </div>
         </form>
-    </div>
 
-    <hr class="my-4">
+        <hr class="my-4">
 
-    <table class="table">
-        <thead>
+        <table class="table">
+            <thead>
             <tr>
                 <th scope="col">ID</th>
                 <th scope="col">Label</th>
@@ -58,13 +57,13 @@
                 <th scope="col">총 좌석</th>
                 <th scope="col">승인 대기 수</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <tr th:each="homeBus : ${homeBus}">
-<!--                <td th:text="${homeBus.id}"></td>-->
+                <!--                <td th:text="${homeBus.id}"></td>-->
                 <td>
                     <a th:href="@{|/manage/home-bus/${homeBus.id}|}"
-                        th:text="${homeBus.id}"/>
+                       th:text="${homeBus.id}"/>
                 </td>
                 <td th:text="${homeBus.label}"></td>
                 <td th:text="${homeBus.path}"></td>
@@ -82,8 +81,9 @@
                     </form>
                 </td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </div>
 </section>
 </body>
 </html>
