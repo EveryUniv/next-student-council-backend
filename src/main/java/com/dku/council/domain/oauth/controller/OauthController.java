@@ -2,6 +2,7 @@ package com.dku.council.domain.oauth.controller;
 
 import com.dku.council.domain.oauth.model.dto.request.OauthLoginRequest;
 import com.dku.council.domain.oauth.model.dto.request.OauthRequest;
+import com.dku.council.domain.oauth.model.dto.request.OauthTermsRequest;
 import com.dku.council.domain.oauth.model.dto.request.TokenExchangeRequest;
 import com.dku.council.domain.oauth.model.dto.response.TokenExchangeResponse;
 import com.dku.council.domain.oauth.service.OauthService;
@@ -50,4 +51,9 @@ public class OauthController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/terms")
+    public RedirectView verifyTerms(@RequestBody OauthTermsRequest request) {
+        String uri = oauthService.verifyTerms(request.getStudentId(), request.toOauthInfo());
+        return new RedirectView(uri);
+    }
 }
