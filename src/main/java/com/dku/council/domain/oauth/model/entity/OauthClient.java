@@ -28,6 +28,7 @@ public class OauthClient {
     private String clientId;
     private String applicationName;
     private String clientSecret;
+    @Column(length = 1000)
     private String redirectUri;
     @Column(length = 1000)
     private String scope;
