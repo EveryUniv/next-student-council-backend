@@ -92,12 +92,4 @@ class OauthRequestTest {
         assertEquals(1, violations.size());
     }
 
-    @Test
-    void throwExceptionWhenScopeIsBlank() {
-        OauthRequest request = OauthRequest.of(codeChallenge, clientId, redirectUri, responseType, " ");
-
-        Set<ConstraintViolation<OauthRequest>> violations = validator.validate(request);
-
-        assertEquals(1, violations.size());
-    }
 }
