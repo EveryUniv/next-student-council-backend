@@ -28,17 +28,23 @@ public class OauthClient {
     private String clientId;
     private String applicationName;
     private String clientSecret;
+    @Column(length = 1000)
     private String redirectUri;
+    @Column(length = 1000)
+    private String scope;
 
-    private OauthClient(String clientId, String applicationName, String clientSecret, String redirectUri) {
+    private OauthClient(String clientId, String applicationName, String clientSecret,
+                        String redirectUri, String scope) {
         this.clientId = clientId;
         this.applicationName = applicationName;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
+        this.scope = scope;
     }
 
-    public static OauthClient of(String clientId, String applicationName, String clientSecret, String redirectUri) {
-        return new OauthClient(clientId, applicationName, clientSecret, redirectUri);
+    public static OauthClient of(String clientId, String applicationName, String clientSecret,
+                                 String redirectUri, String scope) {
+        return new OauthClient(clientId, applicationName, clientSecret, redirectUri, scope);
     }
 
     public void checkClientId(String clientId) {

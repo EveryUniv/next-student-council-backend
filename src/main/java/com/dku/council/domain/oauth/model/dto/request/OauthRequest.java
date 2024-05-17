@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -17,7 +18,7 @@ public class OauthRequest {
     private final String redirectUri;
     @NotBlank(message = "responseType을 입력해주세요.")
     private final String responseType;
-    @NotBlank(message = "scope를 입력해주세요.")
+    @Nullable
     private final String scope;
 
     private OauthRequest(String codeChallenge, String codeChallengeMethod, String clientId,
@@ -58,7 +59,6 @@ public class OauthRequest {
         queryParams.add("client_id", clientId);
         queryParams.add("redirect_uri", redirectUri);
         queryParams.add("response_type", responseType);
-        queryParams.add("scope", scope);
         return queryParams;
     }
 }
