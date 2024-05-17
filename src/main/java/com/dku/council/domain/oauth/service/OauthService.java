@@ -64,15 +64,6 @@ public class OauthService {
                 .orElseThrow(UserNotFoundException::new);
 
         checkPassword(loginInfo.getPassword(), user.getPassword());
-        String authCode = CodeGenerator.generateUUIDCode();
-        Long userId = user.getId();
-        OauthCachePayload cachePayload = oauthInfo.toCachePayload(userId);
-        oauthRedisRepository.cacheOauth(authCode, cachePayload);
-        return UriComponentsBuilder
-                .fromUriString(oauthInfo.getRedirectUri())
-                .toUriString();
-    }
-                .queryParam(CODE, authCode)
 
         OauthClient oauthClient = getOauthClient(oauthInfo.getClientId());
         Optional<OauthConnection> connectionOptional =
@@ -91,6 +82,7 @@ public class OauthService {
         if (!passwordEncoder.matches(inputPassword, userPassword)) {
             throw new WrongPasswordException();
         }
+        return redirectWithAuthCode(oauthInfo, user, oauthClient);
     }
 
     public TokenExchangeResponse exchangeToken(ClientInfo clientInfo, OAuthTarget target) {
@@ -108,7 +100,24 @@ public class OauthService {
         return TokenExchangeResponse.of(token.getAccessToken(), token.getRefreshToken(), payload.getScope());
     }
 
+    @NotNull
+    private String redirectWithAuthCode(OauthInfo oauthInfo, User user, OauthClient oauthClient) {
+        String authCode = CodeGenerator.generateUUIDCode();
+
+        OauthCachePayload cachePayload = oauthInfo.toCachePayload(user.getId(), oauthClient.getScope());
+        oauthRedisRepository.cacheOauth(authCode, cachePayload);
+
+        oauthConnectionRepository.findByUserAndOauthClient(user, oauthClient).orElseGet(() -> {
+            OauthConnection oauthConnection = OauthConnection.of(user, oauthClient);
+            return oauthConnectionRepository.save(oauthConnection);
+        });
+
+        return UriComponentsBuilder
+                .fromUriString(oauthInfo.getRedirectUri())
                 .queryParam(CODE, authCode)
+                .toUriString();
+    }
+
     private static boolean isDisconnected(Optional<OauthConnection> connectionOptional) {
         OauthConnection connection = connectionOptional.orElse(null);
         return connectionOptional.isEmpty() || connection.getStatus() == ConnectionStatus.DISCONNECTED;
