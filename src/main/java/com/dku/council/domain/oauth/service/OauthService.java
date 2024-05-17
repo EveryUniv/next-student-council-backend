@@ -1,15 +1,11 @@
 package com.dku.council.domain.oauth.service;
 
-import com.dku.council.domain.oauth.exception.InvalidGrantTypeException;
-import com.dku.council.domain.oauth.exception.InvalidOauthResponseTypeException;
-import com.dku.council.domain.oauth.exception.OauthCacheNotFoundException;
-import com.dku.council.domain.oauth.exception.OauthClientNotFoundException;
+import com.dku.council.domain.oauth.exception.*;
 import com.dku.council.domain.oauth.model.dto.request.*;
 import com.dku.council.domain.oauth.model.dto.response.TokenExchangeResponse;
-import com.dku.council.domain.oauth.model.entity.HashAlgorithm;
-import com.dku.council.domain.oauth.model.entity.OauthClient;
-import com.dku.council.domain.oauth.model.entity.OauthResponseType;
+import com.dku.council.domain.oauth.model.entity.*;
 import com.dku.council.domain.oauth.repository.OauthClientRepository;
+import com.dku.council.domain.oauth.repository.OauthConnectionRepository;
 import com.dku.council.domain.oauth.repository.OauthRedisRepository;
 import com.dku.council.domain.oauth.util.CodeChallengeConverter;
 import com.dku.council.domain.user.exception.WrongPasswordException;
@@ -21,12 +17,16 @@ import com.dku.council.global.auth.jwt.AuthenticationToken;
 import com.dku.council.global.auth.jwt.JwtProvider;
 import com.dku.council.global.error.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -34,19 +34,26 @@ import java.util.Objects;
 public class OauthService {
     private final OauthClientRepository oauthClientRepository;
     private final OauthRedisRepository oauthRedisRepository;
+    private final OauthConnectionRepository oauthConnectionRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final CodeChallengeConverter codeChallengeConverter;
     private final JwtProvider jwtProvider;
-    private static final String LOGIN_URL = "https://oauth.danvery.com/signin";
+    @Value("${app.oauth.login.url}")
+    private final String LOGIN_URL;
+    @Value("${app.oauth.terms.url}")
+    private final String TERMS_URL;
+    private final String CODE = "code";
 
     public String authorize(OauthRequest oauthRequest) {
         String clientId = oauthRequest.getClientId();
         String redirectUri = oauthRequest.getRedirectUri();
         checkResponseType(oauthRequest.getResponseType());
+
         OauthClient oauthClient = getOauthClient(clientId);
         oauthClient.checkClientId(clientId);
         oauthClient.checkRedirectUri(redirectUri);
+
         return UriComponentsBuilder
                 .fromUriString(LOGIN_URL)
                 .queryParams(oauthRequest.toQueryParams())
@@ -56,39 +63,77 @@ public class OauthService {
     @Transactional
     public String login(RequestLoginDto loginInfo, OauthInfo oauthInfo) {
         checkResponseType(oauthInfo.getResponseType());
-        User user = userRepository.findByStudentId(loginInfo.getStudentId())
-                .orElseThrow(UserNotFoundException::new);
-
+        User user = userRepository.findByStudentId(loginInfo.getStudentId()).orElseThrow(UserNotFoundException::new);
         checkPassword(loginInfo.getPassword(), user.getPassword());
-        String authCode = CodeGenerator.generateUUIDCode();
-        Long userId = user.getId();
-        OauthCachePayload cachePayload = oauthInfo.toCachePayload(userId);
-        oauthRedisRepository.cacheOauth(authCode, cachePayload);
-        return UriComponentsBuilder
-                .fromUriString(oauthInfo.getRedirectUri())
-                .queryParam("code", authCode)
-                .toUriString();
+
+        OauthClient oauthClient = getOauthClient(oauthInfo.getClientId());
+        Optional<OauthConnection> connectionOptional =
+                oauthConnectionRepository.findByUserAndOauthClient(user, oauthClient);
+
+        if (isDisconnected(connectionOptional)) {
+            MultiValueMap<String, String> params = oauthInfo.
+                    toQueryParams(oauthClient.getScope(), user.getStudentId(), oauthClient.getApplicationName());
+            return UriComponentsBuilder
+                    .fromUriString(TERMS_URL)
+                    .queryParams(params)
+                    .toUriString();
+        }
+
+        return redirectWithAuthCode(oauthInfo, user, oauthClient);
     }
 
-    private void checkPassword(String inputPassword, String userPassword) {
-        if (!passwordEncoder.matches(inputPassword, userPassword)) {
-            throw new WrongPasswordException();
-        }
+    @Transactional
+    public String verifyTerms(String studentId, OauthInfo oauthInfo) {
+        checkResponseType(oauthInfo.getResponseType());
+        User user = userRepository.findByStudentId(studentId).orElseThrow(UserNotFoundException::new);
+        OauthClient oauthClient = getOauthClient(oauthInfo.getClientId());
+        oauthClient.checkRedirectUri(oauthInfo.getRedirectUri());
+        return redirectWithAuthCode(oauthInfo, user, oauthClient);
     }
 
     public TokenExchangeResponse exchangeToken(ClientInfo clientInfo, OAuthTarget target) {
         checkGrantType(target.getGrantType());
         OauthClient oauthClient = getOauthClient(clientInfo.getClientId());
         oauthClient.checkClientSecret(clientInfo.getClientSecret());
-        oauthClient.checkRedirectUri(clientInfo.getRedirectUri());
+
         OauthCachePayload payload = getPayload(target);
         String codeVerifier = target.getCodeVerifier();
         String codeChallengeMethod = getCodeChallengeMethod(payload.getCodeChallengeMethod());
         checkCodeChallenge(codeVerifier, codeChallengeMethod, payload);
-        User user = userRepository.findById(payload.getUserId())
-                .orElseThrow(UserNotFoundException::new);
+
+        User user = userRepository.findById(payload.getUserId()).orElseThrow(UserNotFoundException::new);
         AuthenticationToken token = jwtProvider.issue(user);
+
         return TokenExchangeResponse.of(token.getAccessToken(), token.getRefreshToken(), payload.getScope());
+    }
+
+    @NotNull
+    private String redirectWithAuthCode(OauthInfo oauthInfo, User user, OauthClient oauthClient) {
+        String authCode = CodeGenerator.generateUUIDCode();
+
+        OauthCachePayload cachePayload = oauthInfo.toCachePayload(user.getId(), oauthClient.getScope());
+        oauthRedisRepository.cacheOauth(authCode, cachePayload);
+
+        oauthConnectionRepository.findByUserAndOauthClient(user, oauthClient).orElseGet(() -> {
+            OauthConnection oauthConnection = OauthConnection.of(user, oauthClient);
+            return oauthConnectionRepository.save(oauthConnection);
+        });
+
+        return UriComponentsBuilder
+                .fromUriString(oauthInfo.getRedirectUri())
+                .queryParam(CODE, authCode)
+                .toUriString();
+    }
+
+    private static boolean isDisconnected(Optional<OauthConnection> connectionOptional) {
+        OauthConnection connection = connectionOptional.orElse(null);
+        return connectionOptional.isEmpty() || connection.getStatus() == ConnectionStatus.DISCONNECTED;
+    }
+
+    private void checkPassword(String inputPassword, String userPassword) {
+        if (!passwordEncoder.matches(inputPassword, userPassword)) {
+            throw new WrongPasswordException();
+        }
     }
 
     private String getCodeChallengeMethod(String codeChallengeMethod) {
