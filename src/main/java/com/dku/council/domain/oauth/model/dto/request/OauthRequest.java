@@ -59,7 +59,6 @@ public class OauthRequest {
         queryParams.add("client_id", clientId);
         queryParams.add("redirect_uri", redirectUri);
         queryParams.add("response_type", responseType);
-        queryParams.add("scope", scope);
         return queryParams;
     }
 }
