@@ -38,7 +38,10 @@ public class OauthService {
     private final PasswordEncoder passwordEncoder;
     private final CodeChallengeConverter codeChallengeConverter;
     private final JwtProvider jwtProvider;
-    private static final String LOGIN_URL = "https://oauth.danvery.com/signin";
+    @Value("${app.oauth.login.url}")
+    private final String LOGIN_URL;
+    @Value("${app.oauth.terms.url}")
+    private final String TERMS_URL;
     private final String CODE = "code";
 
     public String authorize(OauthRequest oauthRequest) {
@@ -70,6 +73,7 @@ public class OauthService {
                 .toUriString();
     }
                 .queryParam(CODE, authCode)
+                    .fromUriString(TERMS_URL)
 
     private void checkPassword(String inputPassword, String userPassword) {
         if (!passwordEncoder.matches(inputPassword, userPassword)) {
@@ -92,6 +96,7 @@ public class OauthService {
         return TokenExchangeResponse.of(token.getAccessToken(), token.getRefreshToken(), payload.getScope());
     }
 
+                .queryParam(CODE, authCode)
     private String getCodeChallengeMethod(String codeChallengeMethod) {
         if (codeChallengeMethod == null) {
             return HashAlgorithm.SHA256.getAlgorithm();
