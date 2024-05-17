@@ -39,6 +39,7 @@ public class OauthService {
     private final CodeChallengeConverter codeChallengeConverter;
     private final JwtProvider jwtProvider;
     private static final String LOGIN_URL = "https://oauth.danvery.com/signin";
+    private final String CODE = "code";
 
     public String authorize(OauthRequest oauthRequest) {
         String clientId = oauthRequest.getClientId();
@@ -66,9 +67,9 @@ public class OauthService {
         oauthRedisRepository.cacheOauth(authCode, cachePayload);
         return UriComponentsBuilder
                 .fromUriString(oauthInfo.getRedirectUri())
-                .queryParam("code", authCode)
                 .toUriString();
     }
+                .queryParam(CODE, authCode)
 
     private void checkPassword(String inputPassword, String userPassword) {
         if (!passwordEncoder.matches(inputPassword, userPassword)) {
