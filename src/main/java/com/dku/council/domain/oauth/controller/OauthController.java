@@ -23,7 +23,7 @@ public class OauthController {
                                   @RequestParam String clientId,
                                   @RequestParam String redirectUri,
                                   @RequestParam String responseType,
-                                  @RequestParam String scope) {
+                                  @RequestParam(required = false) String scope) {
         OauthRequest request = OauthRequest.of(codeChallenge, codeChallengeMethod, clientId,
                 redirectUri, responseType, scope);
         String uri = oauthService.authorize(request);
