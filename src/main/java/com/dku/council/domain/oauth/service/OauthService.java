@@ -82,6 +82,12 @@ public class OauthService {
         if (!passwordEncoder.matches(inputPassword, userPassword)) {
             throw new WrongPasswordException();
         }
+    @Transactional
+    public String verifyTerms(String studentId, OauthInfo oauthInfo) {
+        checkResponseType(oauthInfo.getResponseType());
+        User user = userRepository.findByStudentId(studentId).orElseThrow(UserNotFoundException::new);
+        OauthClient oauthClient = getOauthClient(oauthInfo.getClientId());
+        oauthClient.checkRedirectUri(oauthInfo.getRedirectUri());
         return redirectWithAuthCode(oauthInfo, user, oauthClient);
     }
 
