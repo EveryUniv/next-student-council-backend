@@ -73,7 +73,19 @@ public class OauthService {
                 .toUriString();
     }
                 .queryParam(CODE, authCode)
+
+        OauthClient oauthClient = getOauthClient(oauthInfo.getClientId());
+        Optional<OauthConnection> connectionOptional =
+                oauthConnectionRepository.findByUserAndOauthClient(user, oauthClient);
+
+        if (isDisconnected(connectionOptional)) {
+            MultiValueMap<String, String> params = oauthInfo.
+                    toQueryParams(oauthClient.getScope(), user.getStudentId(), oauthClient.getApplicationName());
+            return UriComponentsBuilder
                     .fromUriString(TERMS_URL)
+                    .queryParams(params)
+                    .toUriString();
+        }
 
     private void checkPassword(String inputPassword, String userPassword) {
         if (!passwordEncoder.matches(inputPassword, userPassword)) {
@@ -97,6 +109,10 @@ public class OauthService {
     }
 
                 .queryParam(CODE, authCode)
+    private static boolean isDisconnected(Optional<OauthConnection> connectionOptional) {
+        OauthConnection connection = connectionOptional.orElse(null);
+        return connectionOptional.isEmpty() || connection.getStatus() == ConnectionStatus.DISCONNECTED;
+    }
     private String getCodeChallengeMethod(String codeChallengeMethod) {
         if (codeChallengeMethod == null) {
             return HashAlgorithm.SHA256.getAlgorithm();
