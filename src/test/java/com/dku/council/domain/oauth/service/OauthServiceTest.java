@@ -103,13 +103,19 @@ class OauthServiceTest {
     @Test
     void authorizeWhenValidRequest() {
         // given
-        when(oauthClientRepository.findByClientId(any())).thenReturn(Optional.of(oauthClient));
+        final String LOGIN_URL = "https://oauth.danvery.com/signin";
+        ReflectionTestUtils.setField(oauthService, "LOGIN_URL", "https://oauth.danvery.com/signin");
+        when(oauthClientRepository.findByClientId(anyString())).thenReturn(Optional.of(oauthClient));
 
         // when
         String result = oauthService.authorize(oauthRequest);
 
         // then
-        assertNotNull(result);
+        assertEquals(UriComponentsBuilder.
+                fromUriString(LOGIN_URL).
+                queryParams(oauthRequest.toQueryParams()).
+                toUriString(), result);
+
     }
 
     @Test
