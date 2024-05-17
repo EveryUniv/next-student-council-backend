@@ -31,7 +31,7 @@ public class OauthLoginRequest {
     @Nullable
     private final String codeChallengeMethod;
 
-    @NotBlank(message = "scope를 입력해주세요.")
+    @Nullable
     private final String scope;
 
     @NotBlank(message = "responseType을 입력해주세요.")
