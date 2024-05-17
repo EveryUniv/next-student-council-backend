@@ -33,7 +33,7 @@ public class OauthInfo {
         return new OauthInfo(clientId, redirectUri, codeChallenge, codeChallengeMethod, scope, responseType);
     }
 
-    public OauthCachePayload toCachePayload(Long userId) {
+    public OauthCachePayload toCachePayload(Long userId, String scope) {
         return OauthCachePayload.of(userId, codeChallenge, codeChallengeMethod, scope);
     }
 
