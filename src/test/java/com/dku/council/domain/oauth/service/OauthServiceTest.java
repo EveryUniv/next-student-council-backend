@@ -4,10 +4,10 @@ import com.dku.council.domain.oauth.exception.InvalidGrantTypeException;
 import com.dku.council.domain.oauth.exception.InvalidOauthResponseTypeException;
 import com.dku.council.domain.oauth.exception.OauthClientNotFoundException;
 import com.dku.council.domain.oauth.model.dto.request.*;
-import com.dku.council.domain.oauth.model.dto.response.OauthLoginResponse;
 import com.dku.council.domain.oauth.model.dto.response.TokenExchangeResponse;
 import com.dku.council.domain.oauth.model.entity.OauthClient;
 import com.dku.council.domain.oauth.repository.OauthClientRepository;
+import com.dku.council.domain.oauth.repository.OauthConnectionRepository;
 import com.dku.council.domain.oauth.repository.OauthRedisRepository;
 import com.dku.council.domain.oauth.util.CodeChallengeConverter;
 import com.dku.council.domain.user.exception.WrongPasswordException;
@@ -18,19 +18,21 @@ import com.dku.council.domain.user.repository.UserRepository;
 import com.dku.council.global.auth.jwt.JwtAuthenticationToken;
 import com.dku.council.global.auth.jwt.JwtProvider;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -46,6 +48,9 @@ class OauthServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private OauthConnectionRepository oauthConnectionRepository;
 
     @Mock
     private PasswordEncoder passwordEncoder;
@@ -86,7 +91,7 @@ class OauthServiceTest {
         String clientSecret = "clientSecret";
         code = "code";
         oauthRequest = OauthRequest.of(codeChallenge, clientId, redirectUri, responseType, scope);
-        oauthClient = OauthClient.of(clientId, "app", clientSecret, redirectUri);
+        oauthClient = OauthClient.of(clientId, "app", clientSecret, redirectUri, scope);
         loginInfo = new RequestLoginDto("32173437", "1234");
         oauthInfo = OauthInfo.of(clientId, redirectUri, codeChallenge, codeChallengeMethod, scope, responseType);
         clientInfo = ClientInfo.of(clientId, clientSecret, redirectUri);
@@ -130,16 +135,23 @@ class OauthServiceTest {
     }
 
     @Test
-    void loginWhenValidCredentials() {
+    void returnTermsUrlWhenLoginTheFirst() {
         // given
+        final String TERMS_URL = "https://oauth.danvery.com/terms";
+        ReflectionTestUtils.setField(oauthService, "TERMS_URL", TERMS_URL);
         when(userRepository.findByStudentId(any())).thenReturn(Optional.of(user));
         when(passwordEncoder.matches(any(), any())).thenReturn(true);
+        when(oauthClientRepository.findByClientId(any())).thenReturn(Optional.of(oauthClient));
+        when(oauthConnectionRepository.findByUserAndOauthClient(any(), any())).thenReturn(Optional.empty());
 
         // when
-        String response = oauthService.login(loginInfo, oauthInfo);
+        String url = oauthService.login(loginInfo, oauthInfo);
 
         // then
-        assertNotNull(response);
+        assertEquals(UriComponentsBuilder.
+                fromUriString(TERMS_URL).
+                queryParams(oauthInfo.toQueryParams(oauthClient.getScope(), user.getStudentId(), oauthClient.getApplicationName())).
+                toUriString(), url);
     }
 
     @Test
