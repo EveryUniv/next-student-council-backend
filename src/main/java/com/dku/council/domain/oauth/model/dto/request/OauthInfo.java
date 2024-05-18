@@ -1,6 +1,8 @@
 package com.dku.council.domain.oauth.model.dto.request;
 
 import lombok.Getter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import static com.dku.council.domain.oauth.model.entity.HashAlgorithm.SHA256;
 
@@ -31,8 +33,21 @@ public class OauthInfo {
         return new OauthInfo(clientId, redirectUri, codeChallenge, codeChallengeMethod, scope, responseType);
     }
 
-    public OauthCachePayload toCachePayload(Long userId) {
+    public OauthCachePayload toCachePayload(Long userId, String scope) {
         return OauthCachePayload.of(userId, codeChallenge, codeChallengeMethod, scope);
+    }
+
+    public MultiValueMap<String, String> toQueryParams(String scope, String studentId, String applicationName) {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("client_id", clientId);
+        queryParams.add("redirect_uri", redirectUri);
+        queryParams.add("response_type", responseType);
+        queryParams.add("code_challenge", codeChallenge);
+        queryParams.add("code_challenge_method", codeChallengeMethod);
+        queryParams.add("scope", scope);
+        queryParams.add("student_id", studentId);
+        queryParams.add("application_name", applicationName);
+        return queryParams;
     }
 
 }

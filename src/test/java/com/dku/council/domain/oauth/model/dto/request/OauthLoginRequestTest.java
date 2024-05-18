@@ -138,20 +138,6 @@ class OauthLoginRequestTest {
     }
 
     @Test
-    void validateScopeIsBlank() {
-        //given
-        OauthLoginRequest request = new OauthLoginRequest(studentId, password, clientId, redirectUri,
-                codeChallenge, codeChallengeMethod, " ", responseType);
-
-        //when
-        Set<ConstraintViolation<OauthLoginRequest>> violations = validator.validate(request);
-
-        //then
-        assertEquals(1, violations.size());
-        assertEquals("scope를 입력해주세요.", violations.iterator().next().getMessage());
-    }
-
-    @Test
     void validateResponseTypeIsBlank() {
         //given
         OauthLoginRequest request = new OauthLoginRequest(studentId, password, clientId, redirectUri,

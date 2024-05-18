@@ -21,6 +21,7 @@ public class PostPageService {
     private final VocRepository vocRepository;
     private final PetitionRepository petitionRepository;
     private final GeneralForumRepository generalForumRepository;
+    private final NoticeRepository noticeRepository;
 
     public Page<PostPageDto> list(String keyword, String type, String status, Pageable pageable) {
         if (type != null) {
@@ -30,6 +31,8 @@ public class PostPageService {
                 return listPost(petitionRepository, keyword, status, pageable);
             } else if (type.equalsIgnoreCase("GeneralForum")) {
                 return listPost(generalForumRepository, keyword, status, pageable);
+            } else if (type.equalsIgnoreCase("Notice")) {
+                return listPost(noticeRepository, keyword, status, pageable);
             }
         }
         return listPost(genericPostRepository, keyword, status, pageable);
