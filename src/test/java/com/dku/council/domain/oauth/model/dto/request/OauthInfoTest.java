@@ -44,7 +44,7 @@ class OauthInfoTest {
         OauthInfo oauthInfo = OauthInfo.of(clientId, redirectUri, codeChallenge, codeChallengeMethod, scope, responseType);
 
         // when
-        OauthCachePayload payload = oauthInfo.toCachePayload(userId);
+        OauthCachePayload payload = oauthInfo.toCachePayload(userId, scope);
 
         // then
         assertEquals(userId, payload.getUserId());
