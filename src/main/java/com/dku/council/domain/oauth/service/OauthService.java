@@ -2,6 +2,7 @@ package com.dku.council.domain.oauth.service;
 
 import com.dku.council.domain.oauth.exception.*;
 import com.dku.council.domain.oauth.model.dto.request.*;
+import com.dku.council.domain.oauth.model.dto.response.RedirectResponse;
 import com.dku.council.domain.oauth.model.dto.response.TokenExchangeResponse;
 import com.dku.council.domain.oauth.model.entity.*;
 import com.dku.council.domain.oauth.repository.OauthClientRepository;
@@ -45,7 +46,7 @@ public class OauthService {
     private final String TERMS_URL;
     private final String CODE = "code";
 
-    public String authorize(OauthRequest oauthRequest) {
+    public RedirectResponse authorize(OauthRequest oauthRequest) {
         String clientId = oauthRequest.getClientId();
         String redirectUri = oauthRequest.getRedirectUri();
         checkResponseType(oauthRequest.getResponseType());
@@ -54,14 +55,16 @@ public class OauthService {
         oauthClient.checkClientId(clientId);
         oauthClient.checkRedirectUri(redirectUri);
 
-        return UriComponentsBuilder
+        String uri = UriComponentsBuilder
                 .fromUriString(LOGIN_URL)
                 .queryParams(oauthRequest.toQueryParams())
                 .toUriString();
+
+        return RedirectResponse.from(uri);
     }
 
     @Transactional
-    public String login(RequestLoginDto loginInfo, OauthInfo oauthInfo) {
+    public RedirectResponse login(RequestLoginDto loginInfo, OauthInfo oauthInfo) {
         checkResponseType(oauthInfo.getResponseType());
         User user = userRepository.findByStudentId(loginInfo.getStudentId()).orElseThrow(UserNotFoundException::new);
         checkPassword(loginInfo.getPassword(), user.getPassword());
@@ -73,17 +76,18 @@ public class OauthService {
         if (isDisconnected(connectionOptional)) {
             MultiValueMap<String, String> params = oauthInfo.
                     toQueryParams(oauthClient.getScope(), user.getStudentId(), oauthClient.getApplicationName());
-            return UriComponentsBuilder
+            String uri = UriComponentsBuilder
                     .fromUriString(TERMS_URL)
                     .queryParams(params)
                     .toUriString();
+            return RedirectResponse.from(uri);
         }
 
         return redirectWithAuthCode(oauthInfo, user, oauthClient);
     }
 
     @Transactional
-    public String verifyTerms(String studentId, OauthInfo oauthInfo) {
+    public RedirectResponse verifyTerms(String studentId, OauthInfo oauthInfo) {
         checkResponseType(oauthInfo.getResponseType());
         User user = userRepository.findByStudentId(studentId).orElseThrow(UserNotFoundException::new);
         OauthClient oauthClient = getOauthClient(oauthInfo.getClientId());
@@ -108,7 +112,7 @@ public class OauthService {
     }
 
     @NotNull
-    private String redirectWithAuthCode(OauthInfo oauthInfo, User user, OauthClient oauthClient) {
+    private RedirectResponse redirectWithAuthCode(OauthInfo oauthInfo, User user, OauthClient oauthClient) {
         String authCode = CodeGenerator.generateUUIDCode();
 
         OauthCachePayload cachePayload = oauthInfo.toCachePayload(user.getId(), oauthClient.getScope());
@@ -119,10 +123,12 @@ public class OauthService {
             return oauthConnectionRepository.save(oauthConnection);
         });
 
-        return UriComponentsBuilder
+        String uri = UriComponentsBuilder
                 .fromUriString(oauthInfo.getRedirectUri())
                 .queryParam(CODE, authCode)
                 .toUriString();
+
+        return RedirectResponse.from(uri);
     }
 
     private static boolean isDisconnected(Optional<OauthConnection> connectionOptional) {
