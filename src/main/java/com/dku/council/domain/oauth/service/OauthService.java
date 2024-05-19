@@ -112,7 +112,7 @@ public class OauthService {
     }
 
     @NotNull
-    private String redirectWithAuthCode(OauthInfo oauthInfo, User user, OauthClient oauthClient) {
+    private RedirectResponse redirectWithAuthCode(OauthInfo oauthInfo, User user, OauthClient oauthClient) {
         String authCode = CodeGenerator.generateUUIDCode();
 
         OauthCachePayload cachePayload = oauthInfo.toCachePayload(user.getId(), oauthClient.getScope());
@@ -123,10 +123,12 @@ public class OauthService {
             return oauthConnectionRepository.save(oauthConnection);
         });
 
-        return UriComponentsBuilder
+        String uri = UriComponentsBuilder
                 .fromUriString(oauthInfo.getRedirectUri())
                 .queryParam(CODE, authCode)
                 .toUriString();
+
+        return RedirectResponse.from(uri);
     }
 
     private static boolean isDisconnected(Optional<OauthConnection> connectionOptional) {
