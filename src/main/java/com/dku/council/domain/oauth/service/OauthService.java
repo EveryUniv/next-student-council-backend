@@ -2,6 +2,7 @@ package com.dku.council.domain.oauth.service;
 
 import com.dku.council.domain.oauth.exception.*;
 import com.dku.council.domain.oauth.model.dto.request.*;
+import com.dku.council.domain.oauth.model.dto.response.RedirectResponse;
 import com.dku.council.domain.oauth.model.dto.response.TokenExchangeResponse;
 import com.dku.council.domain.oauth.model.entity.*;
 import com.dku.council.domain.oauth.repository.OauthClientRepository;
@@ -63,7 +64,7 @@ public class OauthService {
     }
 
     @Transactional
-    public String login(RequestLoginDto loginInfo, OauthInfo oauthInfo) {
+    public RedirectResponse login(RequestLoginDto loginInfo, OauthInfo oauthInfo) {
         checkResponseType(oauthInfo.getResponseType());
         User user = userRepository.findByStudentId(loginInfo.getStudentId()).orElseThrow(UserNotFoundException::new);
         checkPassword(loginInfo.getPassword(), user.getPassword());
@@ -75,10 +76,11 @@ public class OauthService {
         if (isDisconnected(connectionOptional)) {
             MultiValueMap<String, String> params = oauthInfo.
                     toQueryParams(oauthClient.getScope(), user.getStudentId(), oauthClient.getApplicationName());
-            return UriComponentsBuilder
+            String uri = UriComponentsBuilder
                     .fromUriString(TERMS_URL)
                     .queryParams(params)
                     .toUriString();
+            return RedirectResponse.from(uri);
         }
 
         return redirectWithAuthCode(oauthInfo, user, oauthClient);
