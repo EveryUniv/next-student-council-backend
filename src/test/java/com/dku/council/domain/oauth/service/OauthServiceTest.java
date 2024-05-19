@@ -113,13 +113,13 @@ class OauthServiceTest {
         when(oauthClientRepository.findByClientId(anyString())).thenReturn(Optional.of(oauthClient));
 
         // when
-        String result = oauthService.authorize(oauthRequest);
+        RedirectResponse result = oauthService.authorize(oauthRequest);
 
         // then
         assertEquals(UriComponentsBuilder.
                 fromUriString(LOGIN_URL).
                 queryParams(oauthRequest.toQueryParams()).
-                toUriString(), result);
+                toUriString(), result.getRedirectUri());
 
     }
 
