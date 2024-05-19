@@ -4,12 +4,12 @@ import com.dku.council.domain.oauth.model.dto.request.OauthLoginRequest;
 import com.dku.council.domain.oauth.model.dto.request.OauthRequest;
 import com.dku.council.domain.oauth.model.dto.request.OauthTermsRequest;
 import com.dku.council.domain.oauth.model.dto.request.TokenExchangeRequest;
+import com.dku.council.domain.oauth.model.dto.response.RedirectResponse;
 import com.dku.council.domain.oauth.model.dto.response.TokenExchangeResponse;
 import com.dku.council.domain.oauth.service.OauthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 
 @RestController
@@ -32,9 +32,9 @@ public class OauthController {
     }
 
     @PostMapping("/login")
-    public RedirectView login(@RequestBody OauthLoginRequest request) {
-        String uri = oauthService.login(request.toLoginInfo(), request.toOauthInfo());
-        return new RedirectView(uri);
+    public ResponseEntity<RedirectResponse> login(@RequestBody OauthLoginRequest request) {
+        RedirectResponse response = oauthService.login(request.toLoginInfo(), request.toOauthInfo());
+        return ResponseEntity.ok(response);
     }
 
 
