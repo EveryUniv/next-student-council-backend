@@ -87,7 +87,7 @@ public class OauthService {
     }
 
     @Transactional
-    public String verifyTerms(String studentId, OauthInfo oauthInfo) {
+    public RedirectResponse verifyTerms(String studentId, OauthInfo oauthInfo) {
         checkResponseType(oauthInfo.getResponseType());
         User user = userRepository.findByStudentId(studentId).orElseThrow(UserNotFoundException::new);
         OauthClient oauthClient = getOauthClient(oauthInfo.getClientId());
