@@ -19,16 +19,16 @@ public class OauthController {
     private final OauthService oauthService;
 
     @GetMapping("/authorize")
-    public RedirectView authorize(@RequestParam String codeChallenge,
-                                  @RequestParam(required = false) String codeChallengeMethod,
-                                  @RequestParam String clientId,
-                                  @RequestParam String redirectUri,
-                                  @RequestParam String responseType,
-                                  @RequestParam(required = false) String scope) {
+    public ResponseEntity<RedirectResponse> authorize(@RequestParam String codeChallenge,
+                                                      @RequestParam(required = false) String codeChallengeMethod,
+                                                      @RequestParam String clientId,
+                                                      @RequestParam String redirectUri,
+                                                      @RequestParam String responseType,
+                                                      @RequestParam(required = false) String scope) {
         OauthRequest request = OauthRequest.of(codeChallenge, codeChallengeMethod, clientId,
                 redirectUri, responseType, scope);
-        String uri = oauthService.authorize(request);
-        return new RedirectView(uri);
+        RedirectResponse response = oauthService.authorize(request);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
