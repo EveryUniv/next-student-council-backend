@@ -4,6 +4,7 @@ import com.dku.council.domain.oauth.exception.InvalidGrantTypeException;
 import com.dku.council.domain.oauth.exception.InvalidOauthResponseTypeException;
 import com.dku.council.domain.oauth.exception.OauthClientNotFoundException;
 import com.dku.council.domain.oauth.model.dto.request.*;
+import com.dku.council.domain.oauth.model.dto.response.RedirectResponse;
 import com.dku.council.domain.oauth.model.dto.response.TokenExchangeResponse;
 import com.dku.council.domain.oauth.model.entity.OauthClient;
 import com.dku.council.domain.oauth.repository.OauthClientRepository;
@@ -113,13 +114,13 @@ class OauthServiceTest {
         when(oauthClientRepository.findByClientId(anyString())).thenReturn(Optional.of(oauthClient));
 
         // when
-        String result = oauthService.authorize(oauthRequest);
+        RedirectResponse result = oauthService.authorize(oauthRequest);
 
         // then
         assertEquals(UriComponentsBuilder.
                 fromUriString(LOGIN_URL).
                 queryParams(oauthRequest.toQueryParams()).
-                toUriString(), result);
+                toUriString(), result.getRedirectUri());
 
     }
 
@@ -145,13 +146,13 @@ class OauthServiceTest {
         when(oauthConnectionRepository.findByUserAndOauthClient(any(), any())).thenReturn(Optional.empty());
 
         // when
-        String url = oauthService.login(loginInfo, oauthInfo);
+        RedirectResponse result = oauthService.login(loginInfo, oauthInfo);
 
         // then
         assertEquals(UriComponentsBuilder.
                 fromUriString(TERMS_URL).
                 queryParams(oauthInfo.toQueryParams(oauthClient.getScope(), user.getStudentId(), oauthClient.getApplicationName())).
-                toUriString(), url);
+                toUriString(), result.getRedirectUri());
     }
 
     @Test
