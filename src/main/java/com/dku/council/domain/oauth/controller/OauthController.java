@@ -52,8 +52,8 @@ public class OauthController {
     }
 
     @PostMapping("/terms")
-    public RedirectView verifyTerms(@RequestBody OauthTermsRequest request) {
-        String uri = oauthService.verifyTerms(request.getStudentId(), request.toOauthInfo());
-        return new RedirectView(uri);
+    public ResponseEntity<RedirectResponse> verifyTerms(@RequestBody OauthTermsRequest request) {
+        RedirectResponse response = oauthService.verifyTerms(request.getStudentId(), request.toOauthInfo());
+        return ResponseEntity.ok(response);
     }
 }
