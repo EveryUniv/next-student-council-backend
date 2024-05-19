@@ -45,7 +45,7 @@ public class OauthService {
     private final String TERMS_URL;
     private final String CODE = "code";
 
-    public String authorize(OauthRequest oauthRequest) {
+    public RedirectResponse authorize(OauthRequest oauthRequest) {
         String clientId = oauthRequest.getClientId();
         String redirectUri = oauthRequest.getRedirectUri();
         checkResponseType(oauthRequest.getResponseType());
@@ -54,10 +54,12 @@ public class OauthService {
         oauthClient.checkClientId(clientId);
         oauthClient.checkRedirectUri(redirectUri);
 
-        return UriComponentsBuilder
+        String uri = UriComponentsBuilder
                 .fromUriString(LOGIN_URL)
                 .queryParams(oauthRequest.toQueryParams())
                 .toUriString();
+
+        return RedirectResponse.from(uri);
     }
 
     @Transactional
