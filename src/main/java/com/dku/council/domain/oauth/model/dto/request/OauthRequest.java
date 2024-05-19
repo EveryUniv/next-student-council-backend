@@ -1,7 +1,10 @@
 package com.dku.council.domain.oauth.model.dto.request;
 
 import lombok.Getter;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
+import javax.annotation.Nullable;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -15,7 +18,7 @@ public class OauthRequest {
     private final String redirectUri;
     @NotBlank(message = "responseType을 입력해주세요.")
     private final String responseType;
-    @NotBlank(message = "scope를 입력해주세요.")
+    @Nullable
     private final String scope;
 
     private OauthRequest(String codeChallenge, String codeChallengeMethod, String clientId,
@@ -47,5 +50,15 @@ public class OauthRequest {
     public static OauthRequest of(String codeChallenge, String clientId,
                                   String redirectUri, String responseType, String scope) {
         return new OauthRequest(codeChallenge, clientId, redirectUri, responseType, scope);
+    }
+
+    public MultiValueMap<String, String> toQueryParams() {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("code_challenge", codeChallenge);
+        queryParams.add("code_challenge_method", codeChallengeMethod);
+        queryParams.add("client_id", clientId);
+        queryParams.add("redirect_uri", redirectUri);
+        queryParams.add("response_type", responseType);
+        return queryParams;
     }
 }

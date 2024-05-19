@@ -5,22 +5,21 @@
 <section>
     <div class="py-5 text-center">
         <h2>태그 목록</h2>
-        <div class="d-flex gap-2 justify-content-center py-5">
-            <p class="btn btn-secondary rounded-pill px-3" type="button">
-                <a th:href="@{|/manage|}" style="color: white">홈으로</a>
-            </p>
-        </div>
+        <!--        <div class="d-flex gap-2 justify-content-center py-5">-->
+        <!--            <p class="btn btn-secondary rounded-pill px-3" type="button">-->
+        <!--                <a th:href="@{|/manage|}" style="color: white">홈으로</a>-->
+        <!--            </p>-->
+        <!--        </div>-->
     </div>
 
-    <hr class="my-4">
-    <div>
+    <!--    <hr class="my-4">-->
+    <div class="container">
         <nav aria-label="Page navigation example">
-            <div class="input-group mb-3">
+            <div class="mb-3 d-flex justify-content-end">
                 <form method="post" th:action="@{/manage/tags}">
-                    <div class="input-group flex-nowrap">
+                    <div class="input-group flex-nowrap py-3">
                         <input class="form-control" type="text" name="name" placeholder="태그 추가하기">
-                        <button class="btn btn-outline-secondary float-end" type="submit" id="button-addon2">추가
-                        </button>
+                        <button class="btn btn-secondary float-end" type="submit" id="button-addon2">추가</button>
                     </div>
                 </form>
             </div>

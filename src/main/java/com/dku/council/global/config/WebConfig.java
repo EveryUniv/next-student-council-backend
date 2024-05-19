@@ -43,9 +43,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins(parseCorsList(corsList))
+                .allowedOriginPatterns(parseCorsList(corsList))
                 .allowedHeaders("*")
-                .allowedMethods("*");
+                .allowedMethods("*")
+                .allowCredentials(true);
     }
 
     private static String[] parseCorsList(String corsList) {

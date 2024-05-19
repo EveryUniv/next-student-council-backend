@@ -5,15 +5,15 @@
 <section>
     <div class="py-5 text-center">
         <h2>티켓팅</h2>
-        <div class="d-flex gap-2 justify-content-center py-5">
-            <p class="btn btn-secondary rounded-pill px-3" type="button">
-                <a th:href="@{|/manage|}" style="color: white">홈으로</a>
-            </p>
-        </div>
+        <!--        <div class="d-flex gap-2 justify-content-center py-5">-->
+        <!--            <p class="btn btn-secondary rounded-pill px-3" type="button">-->
+        <!--                <a th:href="@{|/manage|}" style="color: white">홈으로</a>-->
+        <!--            </p>-->
+        <!--        </div>-->
     </div>
 
-    <hr class="my-4">
-    <div>
+    <!--    <hr class="my-4">-->
+    <div class="container">
         <form method="post" th:action="@{|/manage/ticket/cancelPermit|}" th:object="${ticket}">
             <label class="form-label">티켓 발급 취소</label>
             <div class="input-group flex-nowrap">

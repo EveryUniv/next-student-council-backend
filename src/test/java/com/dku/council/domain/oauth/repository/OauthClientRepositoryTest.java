@@ -20,6 +20,7 @@ class OauthClientRepositoryTest {
     private String appName;
     private String clientSecret;
     private String redirectUri;
+    private String scope;
 
     @BeforeEach
     void setUp() {
@@ -27,11 +28,12 @@ class OauthClientRepositoryTest {
         appName = "appName";
         clientSecret = "clientSecret";
         redirectUri = "redirectUri";
+        scope = "studentId gender";
     }
 
     @Test
     void saveOauthClient() {
-        OauthClient oauthClient = OauthClient.of(clientId, appName, clientSecret, redirectUri);
+        OauthClient oauthClient = OauthClient.of(clientId, appName, clientSecret, redirectUri, scope);
 
         OauthClient savedOauthClient = oauthClientRepository.save(oauthClient);
 
@@ -39,11 +41,12 @@ class OauthClientRepositoryTest {
         assertEquals(appName, savedOauthClient.getApplicationName());
         assertEquals(clientSecret, savedOauthClient.getClientSecret());
         assertEquals(redirectUri, savedOauthClient.getRedirectUri());
+        assertEquals(scope, savedOauthClient.getScope());
     }
 
     @Test
     void findOauthClient() {
-        OauthClient oauthClient = OauthClient.of(clientId, appName, clientSecret, redirectUri);
+        OauthClient oauthClient = OauthClient.of(clientId, appName, clientSecret, redirectUri, scope);
         oauthClientRepository.save(oauthClient);
 
         Optional<OauthClient> foundOauthClient = oauthClientRepository.findByClientId(clientId);
@@ -54,5 +57,6 @@ class OauthClientRepositoryTest {
         assertEquals(appName, client.getApplicationName());
         assertEquals(clientSecret, client.getClientSecret());
         assertEquals(redirectUri, client.getRedirectUri());
+        assertEquals(scope, client.getScope());
     }
 }
