@@ -161,7 +161,7 @@ public class OauthService {
     private void checkCodeChallenge(String codeVerifier, String codeChallengeMethod, OauthCachePayload payload)
             throws NoSuchAlgorithmException {
         String convertedCode = codeChallengeConverter.convertToCodeChallenge(codeVerifier, codeChallengeMethod);
-        payload.checkCodeChallenge(convertedCode);
+        payload.checkCodeChallenge(codeVerifier, convertedCode);
     }
 
     private OauthCachePayload getPayload(OAuthTarget target) {
