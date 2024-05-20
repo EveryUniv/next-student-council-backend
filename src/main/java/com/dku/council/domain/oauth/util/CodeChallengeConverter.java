@@ -11,7 +11,7 @@ import java.util.Base64;
 public class CodeChallengeConverter {
     public String convertToCodeChallenge(String code, String codeChallengeMethod) {
         byte[] digest = getDigest(code.getBytes(StandardCharsets.UTF_8), codeChallengeMethod);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(digest);
+        return Base64.getUrlEncoder().encodeToString(digest);
     }
 
     private static byte[] getDigest(byte[] input, String algorithm) {
