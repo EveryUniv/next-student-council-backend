@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -95,7 +96,8 @@ public class OauthService {
         return redirectWithAuthCode(oauthInfo, user, oauthClient);
     }
 
-    public TokenExchangeResponse exchangeToken(ClientInfo clientInfo, OAuthTarget target) {
+    public TokenExchangeResponse exchangeToken(ClientInfo clientInfo, OAuthTarget target)
+            throws NoSuchAlgorithmException {
         checkGrantType(target.getGrantType());
         OauthClient oauthClient = getOauthClient(clientInfo.getClientId());
         oauthClient.checkClientSecret(clientInfo.getClientSecret());
@@ -156,7 +158,8 @@ public class OauthService {
         return codeChallengeMethod;
     }
 
-    private void checkCodeChallenge(String codeVerifier, String codeChallengeMethod, OauthCachePayload payload) {
+    private void checkCodeChallenge(String codeVerifier, String codeChallengeMethod, OauthCachePayload payload)
+            throws NoSuchAlgorithmException {
         String convertedCode = codeChallengeConverter.convertToCodeChallenge(codeVerifier, codeChallengeMethod);
         payload.checkCodeChallenge(convertedCode);
     }

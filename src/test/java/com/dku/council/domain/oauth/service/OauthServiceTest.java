@@ -29,6 +29,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -167,7 +168,7 @@ class OauthServiceTest {
     }
 
     @Test
-    void exchangeTokenWhenValidClientInfo() {
+    void exchangeTokenWhenValidClientInfo() throws NoSuchAlgorithmException {
         // given
         JwtAuthenticationToken authenticationToken = JwtAuthenticationToken.builder().accessToken("ATK")
                 .refreshToken("RTK").build();

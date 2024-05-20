@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.NoSuchAlgorithmException;
+
 
 @RestController
 @RequestMapping("/oauth")
@@ -39,12 +41,13 @@ public class OauthController {
 
 
     @PostMapping("/token")
-    public ResponseEntity<TokenExchangeResponse> exchangeToken(@RequestParam String grantType,
-                                                               @RequestParam String clientId,
-                                                               @RequestParam String redirectUri,
-                                                               @RequestParam String clientSecret,
-                                                               @RequestParam String code,
-                                                               @RequestParam String codeVerifier) {
+    public ResponseEntity<TokenExchangeResponse> exchangeToken(
+            @RequestParam String grantType,
+            @RequestParam String clientId,
+            @RequestParam String redirectUri,
+            @RequestParam String clientSecret,
+            @RequestParam String code,
+            @RequestParam String codeVerifier) throws NoSuchAlgorithmException {
         TokenExchangeRequest request = TokenExchangeRequest.of(grantType, clientId, redirectUri,
                 clientSecret, code, codeVerifier);
         TokenExchangeResponse response = oauthService.exchangeToken(request.toClientInfo(), request.toAuthTarget());
