@@ -39,10 +39,13 @@ class OauthCachePayloadTest {
     @Test
     void throwExceptionWhenCodeChallengeDoesNotMatch() {
         // given
+        String codeVerifier = "codeVerifier";
         String codeChallenge = "codeChallenge";
-        OauthCachePayload payload = OauthCachePayload.of(1L, codeChallenge, "codeChallengeMethod", "scope");
+        OauthCachePayload payload = OauthCachePayload
+                .of(1L, codeChallenge, "codeChallengeMethod", "scope");
 
         // when, then
-        assertThrows(InvalidCodeChallengeException.class, () -> payload.checkCodeChallenge("differentCodeChallenge"));
+        assertThrows(InvalidCodeChallengeException.class, () ->
+                payload.checkCodeChallenge(codeVerifier, "differentCodeChallenge"));
     }
 }
