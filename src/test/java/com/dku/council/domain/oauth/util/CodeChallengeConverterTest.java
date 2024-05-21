@@ -13,7 +13,7 @@ class CodeChallengeConverterTest {
         CodeChallengeConverter converter = new CodeChallengeConverter();
         String code = "code";
         String codeChallengeMethod = "SHA-256";
-        String expected = "VpTQii5T/8rgwxA+Wtb2B2q9lg6x+KVldwQLwQKPcCs";
+        String expected = "VpTQii5T_8rgwxA-Wtb2B2q9lg6x-KVldwQLwQKPcCs";
 
         String result = converter.convertToCodeChallenge(code, codeChallengeMethod);
 
