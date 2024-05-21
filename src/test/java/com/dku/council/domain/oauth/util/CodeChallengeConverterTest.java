@@ -26,6 +26,6 @@ class CodeChallengeConverterTest {
         String code = "code";
         String codeChallengeMethod = "InvalidAlgorithm";
 
-        assertThrows(RuntimeException.class, () -> converter.convertToCodeChallenge(code, codeChallengeMethod));
+        assertThrows(NoSuchAlgorithmException.class, () -> converter.convertToCodeChallenge(code, codeChallengeMethod));
     }
 }
