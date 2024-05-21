@@ -19,7 +19,7 @@ public class CodeChallengeConverter {
             MessageDigest messageDigest = MessageDigest.getInstance(codeChallengeMethod);
             messageDigest.update(bytes, 0, bytes.length);
             byte[] digest = messageDigest.digest();
-            return Base64.getEncoder().withoutPadding().encodeToString(digest);
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(digest);
         } catch (NoSuchAlgorithmException e) {
             throw new NoSuchAlgorithmException(e);
         }
