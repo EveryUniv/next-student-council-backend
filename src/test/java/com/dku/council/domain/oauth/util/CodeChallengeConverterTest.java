@@ -2,12 +2,14 @@ package com.dku.council.domain.oauth.util;
 
 import org.junit.jupiter.api.Test;
 
+import java.security.NoSuchAlgorithmException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class CodeChallengeConverterTest {
 
     @Test
-    void convertToCodeChallengeWithSHA256() {
+    void convertToCodeChallengeWithSHA256() throws NoSuchAlgorithmException {
         CodeChallengeConverter converter = new CodeChallengeConverter();
         String code = "code";
         String codeChallengeMethod = "SHA-256";
@@ -24,6 +26,6 @@ class CodeChallengeConverterTest {
         String code = "code";
         String codeChallengeMethod = "InvalidAlgorithm";
 
-        assertThrows(RuntimeException.class, () -> converter.convertToCodeChallenge(code, codeChallengeMethod));
+        assertThrows(NoSuchAlgorithmException.class, () -> converter.convertToCodeChallenge(code, codeChallengeMethod));
     }
 }

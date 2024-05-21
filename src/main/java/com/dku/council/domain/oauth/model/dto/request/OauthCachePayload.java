@@ -16,9 +16,9 @@ public class OauthCachePayload {
         return new OauthCachePayload(userId, codeChallenge, codeChallengeMethod, scope);
     }
 
-    public void checkCodeChallenge(String codeChallenge) {
+    public void checkCodeChallenge(String codeVerifier, String codeChallenge) {
         if (!this.codeChallenge.equals(codeChallenge)) {
-            throw new InvalidCodeChallengeException(codeChallenge);
+            throw new InvalidCodeChallengeException(codeChallenge, codeVerifier);
         }
     }
 }
