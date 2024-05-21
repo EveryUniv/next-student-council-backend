@@ -12,15 +12,16 @@ public class CodeChallengeConverter {
         return getCodeChallenge(code, codeChallengeMethod);
     }
 
-    private static String getCodeChallenge(String codeVerifier, String codeChallengeMethod) throws NoSuchAlgorithmException {
+    private static String getCodeChallenge(String codeVerifier, String codeChallengeMethod)
+            throws NoSuchAlgorithmException {
         byte[] bytes = codeVerifier.getBytes();
         try {
             MessageDigest messageDigest = MessageDigest.getInstance(codeChallengeMethod);
             messageDigest.update(bytes, 0, bytes.length);
             byte[] digest = messageDigest.digest();
-            return Base64.getEncoder().encodeToString(digest);
+            return Base64.getUrlEncoder().withoutPadding().encodeToString(digest);
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            throw new NoSuchAlgorithmException(e);
         }
     }
 
