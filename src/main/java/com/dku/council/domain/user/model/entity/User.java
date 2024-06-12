@@ -213,10 +213,11 @@ public class User extends BaseEntity {
      * @param age      나이
      * @param gender   성별
      */
-    public void updateDkuInfo(String age, String gender) {
+    public void updateDkuInfo(String age, String gender, String studentState) {
         this.isDkuChecked = true;
         this.age = age;
         this.gender = gender;
+        this.academicStatus = studentState;
     }
 
     /**
