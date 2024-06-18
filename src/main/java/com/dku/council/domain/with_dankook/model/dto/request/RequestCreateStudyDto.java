@@ -37,7 +37,7 @@ public class RequestCreateStudyDto extends RequestCreateWithDankookDto<Study> {
 
     @NotBlank
     @Schema(description = "본문", example = "내용")
-    private final String content;
+    private final String body;
 
     @JsonCreator
     public RequestCreateStudyDto (@JsonProperty("title") @NotBlank String title,
@@ -45,13 +45,13 @@ public class RequestCreateStudyDto extends RequestCreateWithDankookDto<Study> {
                                   @JsonProperty("startTime") @NotBlank LocalDateTime startTime,
                                   @JsonProperty("endTime") @NotBlank LocalDateTime endTime,
                                   @JsonProperty("tag") String tag,
-                                  @JsonProperty("content") @NotBlank String content) {
+                                  @JsonProperty("content") @NotBlank String body) {
         this.title = title;
         this.minStudentId = minStudentId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.tag = tag;
-        this.content = content;
+        this.body = body;
     }
 
     public Study toEntity(User user) {
@@ -60,7 +60,7 @@ public class RequestCreateStudyDto extends RequestCreateWithDankookDto<Study> {
                 .minStudentId(minStudentId)
                 .startTime(startTime)
                 .endTime(endTime)
-                .content(content)
+                .content(body)
                 .user(user)
                 .build();
     }

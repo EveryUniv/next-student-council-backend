@@ -18,14 +18,14 @@ public class RequestCreateEatingAloneDto extends RequestCreateWithDankookDto<Eat
 
     @NotBlank
     @Schema(description = "본문", example = "내용")
-    private final String content;
+    private final String body;
 
     @Override
     public EatingAlone toEntity(User user) {
         return EatingAlone.builder()
                 .user(user)
                 .title(title)
-                .content(content)
+                .content(body)
                 .build();
     }
 }
