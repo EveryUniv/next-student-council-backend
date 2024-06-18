@@ -22,7 +22,8 @@ public class WithDankookUserService {
      * @return                  모집된 인원 수
      */
     public int recruitedCount(Long withDankookId) {
-        return withDankookUserRepository.findRecruitedById(withDankookId);
+        Optional<Integer> recruitedCount = withDankookUserRepository.findRecruitedById(withDankookId);
+        return recruitedCount.orElse(0);
     }
 
     /**

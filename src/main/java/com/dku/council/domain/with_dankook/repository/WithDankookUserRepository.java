@@ -15,7 +15,7 @@ public interface WithDankookUserRepository extends JpaRepository<WithDankookUser
             "where u.participantStatus = 'VALID' " +
             "group by u.withDankook.id " +
             "having u.withDankook.id = :id ")
-    int findRecruitedById(@Param("id") Long id);
+    Optional<Integer> findRecruitedById(@Param("id") Long id);
 
     @Query("select u from WithDankookUser u " +
             "where u.withDankook.id = :withDankookId and " +
