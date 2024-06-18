@@ -30,7 +30,7 @@ public class RequestCreateBearEatsDto extends RequestCreateWithDankookDto<BearEa
 
     @NotBlank
     @Schema(description = "본문", example = "내용")
-    private final String content;
+    private final String body;
 
     @Override
     public BearEats toEntity(User user) {
@@ -39,7 +39,7 @@ public class RequestCreateBearEatsDto extends RequestCreateWithDankookDto<BearEa
                 .restaurant(restaurant)
                 .deliveryPlace(deliveryPlace)
                 .deliveryTime(deliveryTime)
-                .content(content)
+                .content(body)
                 .build();
     }
 }

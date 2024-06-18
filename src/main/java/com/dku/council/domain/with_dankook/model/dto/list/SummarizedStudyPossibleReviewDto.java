@@ -20,7 +20,7 @@ public class SummarizedStudyPossibleReviewDto {
     private final String title;
 
     @Schema(description = "내용", example = "게시글 본문")
-    private final String content;
+    private final String body;
 
     @Schema(description = "리뷰를 작성할 사용자들 리스트", example = "[1, 3, 4]")
     private final List<RecruitedUsersDto> targetUserList;
@@ -28,7 +28,7 @@ public class SummarizedStudyPossibleReviewDto {
     public SummarizedStudyPossibleReviewDto(Study study, Long writerId) {
         this.withDankookId = study.getId();
         this.title = study.getTitle();
-        this.content = study.getContent();
+        this.body = study.getContent();
         this.targetUserList = study.getUsers().stream()
                 .filter(user -> !Objects.equals(user.getParticipant().getId(), writerId))
                 .map(RecruitedUsersDto::new)
