@@ -76,7 +76,7 @@ public class TradeService {
                 .user(user)
                 .title(dto.getTitle())
                 .price(dto.getPrice())
-                .content(dto.getContent())
+                .content(dto.getBody())
                 .tradePlace(dto.getTradePlace())
                 .build();
 

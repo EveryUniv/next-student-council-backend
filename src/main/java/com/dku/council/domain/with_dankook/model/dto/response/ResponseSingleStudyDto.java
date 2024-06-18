@@ -28,7 +28,7 @@ public class ResponseSingleStudyDto extends ResponseSingleWithDankookDto {
     private final String tag;
 
     @Schema(description = "내용", example = "게시글 본문")
-    private final String content;
+    private final String body;
 
     @Schema(description = "모집된 인원", example = "1")
     private final int recruitedCount;
@@ -42,7 +42,7 @@ public class ResponseSingleStudyDto extends ResponseSingleWithDankookDto {
         this.minStudentId = study.getMinStudentId();
         this.startTime = study.getStartTime();
         this.endTime = study.getEndTime();
-        this.content = study.getContent();
+        this.body = study.getContent();
         this.tag = study.getTag().getName();
         this.recruitedCount = recruitedCount;
         this.recruitedUsers = study.getUsers().stream()

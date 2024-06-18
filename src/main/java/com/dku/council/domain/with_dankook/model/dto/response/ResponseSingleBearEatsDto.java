@@ -23,7 +23,7 @@ public class ResponseSingleBearEatsDto extends ResponseSingleWithDankookDto {
     private final String deliveryTime;
 
     @Schema(description = "내용", example = "피자헛에서 피자를 시켜먹을 사람을 구합니다.")
-    private final String content;
+    private final String body;
 
     @Schema(description = "모집된 인원", example = "1")
     private final int recruitedCount;
@@ -36,7 +36,7 @@ public class ResponseSingleBearEatsDto extends ResponseSingleWithDankookDto {
         this.restaurant = bearEats.getRestaurant();
         this.deliveryPlace = bearEats.getDeliveryPlace();
         this.deliveryTime = bearEats.getDeliveryTime().toString();
-        this.content = bearEats.getContent();
+        this.body = bearEats.getContent();
         this.recruitedCount = recruitedCount;
         this.recruitedUsers = bearEats.getUsers().stream()
                 .map(RecruitedUsersDto::new)

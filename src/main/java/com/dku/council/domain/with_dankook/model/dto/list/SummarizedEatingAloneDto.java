@@ -11,7 +11,7 @@ public class SummarizedEatingAloneDto extends SummarizedWithDankookDto {
     private final String title;
 
     @Schema(description = "내용", example = "저녁 같이 먹을 사람 구해요")
-    private final String content;
+    private final String body;
 
     @Schema(description = "모집된 인원", example = "1")
     private final int recruitedCount;
@@ -19,7 +19,7 @@ public class SummarizedEatingAloneDto extends SummarizedWithDankookDto {
     public SummarizedEatingAloneDto(SummarizedWithDankookDto dto, EatingAlone eatingAlone, int recruitedCount) {
         super(dto);
         this.title = eatingAlone.getTitle();
-        this.content = eatingAlone.getContent();
+        this.body = eatingAlone.getContent();
         this.recruitedCount = recruitedCount;
     }
 }
