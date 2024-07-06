@@ -1,6 +1,5 @@
 package com.dku.council.domain.with_dankook.model.dto.list;
 
-import com.dku.council.domain.with_dankook.model.WithDankookStatus;
 import com.dku.council.domain.with_dankook.model.dto.TradeImageDto;
 import com.dku.council.domain.with_dankook.model.entity.type.Trade;
 import com.dku.council.infra.nhn.s3.service.ObjectUploadContext;
@@ -21,7 +20,7 @@ public class SummarizedTradeDto extends SummarizedWithDankookDto{
     private final int price;
 
     @Schema(description = "내용", example = "게시글 본문")
-    private final String content;
+    private final String body;
 
     @Schema(description = "거래 장소", example = "단국대학교 정문")
     private final String tradePlace;
@@ -36,7 +35,7 @@ public class SummarizedTradeDto extends SummarizedWithDankookDto{
         super(dto);
         this.title = trade.getTitle();
         this.price = trade.getPrice();
-        this.content = trade.getContent();
+        this.body = trade.getContent();
         this.tradePlace = trade.getTradePlace();
         this.images = TradeImageDto.listOf(context, trade.getImages());
         this.status = messageSource.getMessage("withdankook.trade." + trade.getWithDankookStatus().name().toLowerCase(), null, LocaleContextHolder.getLocale());

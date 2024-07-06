@@ -11,7 +11,7 @@ public class SummarizedStudyDto extends SummarizedWithDankookDto {
     private final String title;
 
     @Schema(description = "내용", example = "게시글 본문")
-    private final String content;
+    private final String body;
 
     @Schema(description = "해시태그")
     private final String tag;
@@ -22,7 +22,7 @@ public class SummarizedStudyDto extends SummarizedWithDankookDto {
     public SummarizedStudyDto(SummarizedWithDankookDto dto, Study study, int recruitedCount) {
         super(dto);
         this.title = study.getTitle();
-        this.content = study.getContent();
+        this.body = study.getContent();
         this.tag = study.getTag().getName();
         this.recruitedCount = recruitedCount;
     }

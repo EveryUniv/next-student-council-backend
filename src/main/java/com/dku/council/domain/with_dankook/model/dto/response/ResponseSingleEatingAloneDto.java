@@ -15,7 +15,7 @@ public class ResponseSingleEatingAloneDto extends ResponseSingleWithDankookDto {
     private final String title;
 
     @Schema(description = "내용", example = "학교 앞에서 먹을겁니다.")
-    private final String content;
+    private final String body;
 
     @Schema(description = "모집된 인원", example = "1")
     private final int recruitedCount;
@@ -26,7 +26,7 @@ public class ResponseSingleEatingAloneDto extends ResponseSingleWithDankookDto {
     public ResponseSingleEatingAloneDto(ResponseSingleWithDankookDto dto, EatingAlone eatingAlone, int recruitedCount) {
         super(dto);
         this.title = eatingAlone.getTitle();
-        this.content = eatingAlone.getContent();
+        this.body = eatingAlone.getContent();
         this.recruitedCount = recruitedCount;
         this.recruitedUsers = eatingAlone.getUsers().stream()
                 .map(RecruitedUsersDto::new)

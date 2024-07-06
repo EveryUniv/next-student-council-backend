@@ -26,7 +26,7 @@ public class RequestCreateTradeDto extends RequestCreateWithDankookDto<Trade> {
 
     @NotBlank
     @Schema(description = "본문", example = "내용")
-    private final String content;
+    private final String body;
 
     @NotBlank
     @Schema(description = "거래 장소", example = "단국대학교 정문")
@@ -35,10 +35,10 @@ public class RequestCreateTradeDto extends RequestCreateWithDankookDto<Trade> {
     @Schema(description = "이미지 파일 목록")
     private final List<MultipartFile> images;
 
-    public RequestCreateTradeDto(@NotBlank String title, @NotBlank int price, @NotBlank String content, @NotBlank String tradePlace, List<MultipartFile> images) {
+    public RequestCreateTradeDto(@NotBlank String title, @NotBlank int price, @NotBlank String body, @NotBlank String tradePlace, List<MultipartFile> images) {
         this.title = title;
         this.price = price;
-        this.content = content;
+        this.body = body;
         this.tradePlace = tradePlace;
         this.images = Objects.requireNonNullElseGet(images, ArrayList::new);
     }
@@ -47,7 +47,7 @@ public class RequestCreateTradeDto extends RequestCreateWithDankookDto<Trade> {
         return Trade.builder()
                 .title(title)
                 .price(price)
-                .content(content)
+                .content(body)
                 .tradePlace(tradePlace)
                 .user(user)
                 .build();

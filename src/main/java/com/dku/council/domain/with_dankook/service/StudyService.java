@@ -1,9 +1,7 @@
 package com.dku.council.domain.with_dankook.service;
 
 import com.dku.council.domain.chat.exception.ChatRoomNotFoundException;
-import com.dku.council.domain.chat.model.dto.response.ResponseChatRoomDto;
 import com.dku.council.domain.chat.model.dto.response.ResponseChatRoomIdDto;
-import com.dku.council.domain.chat.model.entity.ChatRoom;
 import com.dku.council.domain.chat.repository.ChatRoomRepository;
 import com.dku.council.domain.chat.service.ChatService;
 import com.dku.council.domain.studytag.model.entity.StudyTag;
@@ -85,7 +83,7 @@ public class StudyService {
                 .startTime(dto.getStartTime())
                 .endTime(dto.getEndTime())
                 .tag(studyTag)
-                .content(dto.getContent())
+                .content(dto.getBody())
                 .build();
 
         Long result = studyRepository.save(study).getId();
