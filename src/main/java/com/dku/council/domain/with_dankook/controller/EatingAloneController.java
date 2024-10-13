@@ -37,9 +37,10 @@ public class EatingAloneController {
      * @return            페이징된 EatingAlone 게시판 목록
      */
     @GetMapping
-    public ResponsePage<SummarizedEatingAloneDto> list(@RequestParam(defaultValue = "50") int bodySize,
+    public ResponsePage<SummarizedEatingAloneDto> list(@RequestParam(required = false) String keyword,
+                                                       @RequestParam(defaultValue = "50") int bodySize,
                                                        @ParameterObject Pageable pageable) {
-        Page<SummarizedEatingAloneDto> list = eatingAloneService.list(pageable, bodySize);
+        Page<SummarizedEatingAloneDto> list = eatingAloneService.list(keyword, pageable, bodySize);
         return new ResponsePage<>(list);
     }
 

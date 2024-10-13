@@ -4,11 +4,15 @@ import com.dku.council.domain.with_dankook.model.entity.type.BearEats;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import org.springframework.context.MessageSource;
 
 import java.time.LocalDateTime;
 
 @Getter
 public class SummarizedBearEatsDto extends SummarizedWithDankookDto {
+
+    @Schema(description = "제목", example = "제목")
+    private final String title;
 
     @Schema(description = "식당 이름", example = "피자헛")
     private final String restaurant;
@@ -28,6 +32,7 @@ public class SummarizedBearEatsDto extends SummarizedWithDankookDto {
 
     public SummarizedBearEatsDto(SummarizedWithDankookDto dto, BearEats bearEats, int recruitedCount) {
         super(dto);
+        this.title = bearEats.getTitle();
         this.restaurant = bearEats.getRestaurant();
         this.deliveryPlace = bearEats.getDeliveryPlace();
         this.deliveryTime = bearEats.getDeliveryTime();

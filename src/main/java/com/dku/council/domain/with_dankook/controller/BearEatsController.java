@@ -37,9 +37,10 @@ public class BearEatsController {
      * @return            페이징된 BearEats 게시판 목록
      */
     @GetMapping
-    public ResponsePage<SummarizedBearEatsDto> list(@RequestParam(defaultValue = "50") int bodySize,
+    public ResponsePage<SummarizedBearEatsDto> list(@RequestParam(required = false) String keyword,
+                                                    @RequestParam(defaultValue = "50") int bodySize,
                                                     @ParameterObject Pageable pageable) {
-        Page<SummarizedBearEatsDto> list = bearEatsService.list(pageable, bodySize);
+        Page<SummarizedBearEatsDto> list = bearEatsService.list(keyword, pageable, bodySize);
         return new ResponsePage<>(list);
     }
 

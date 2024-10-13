@@ -23,7 +23,10 @@ public class ResponseSingleEatingAloneDto extends ResponseSingleWithDankookDto {
     @Schema(description = "모집된 사용자들")
     private final List<RecruitedUsersDto> recruitedUsers;
 
-    public ResponseSingleEatingAloneDto(ResponseSingleWithDankookDto dto, EatingAlone eatingAlone, int recruitedCount) {
+    @Schema(description = "내가 참여했는지 여부", example = "true")
+    private final boolean isApplied;
+
+    public ResponseSingleEatingAloneDto(ResponseSingleWithDankookDto dto, EatingAlone eatingAlone, int recruitedCount, boolean isApplied) {
         super(dto);
         this.title = eatingAlone.getTitle();
         this.body = eatingAlone.getContent();
@@ -31,5 +34,6 @@ public class ResponseSingleEatingAloneDto extends ResponseSingleWithDankookDto {
         this.recruitedUsers = eatingAlone.getUsers().stream()
                 .map(RecruitedUsersDto::new)
                 .collect(Collectors.toList());
+        this.isApplied = isApplied;
     }
 }
