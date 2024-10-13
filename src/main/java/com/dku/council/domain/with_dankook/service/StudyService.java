@@ -162,9 +162,12 @@ public class StudyService {
     @Transactional(readOnly = true)
     public ResponseSingleStudyDto findOne(Long studyId, Long userId, UserRole role) {
         Study study = findStudy(studyRepository, studyId, role);
+        boolean isApplied = withDankookUserRepository.isExistsByWithDankookIdAndUserId(study.getId(), userId)
+                .isPresent();
         return new ResponseSingleStudyDto(withDankookService.makeSingleDto(userId, study),
                 study,
-                withDankookUserService.recruitedCount(withDankookService.makeSingleDto(userId, study).getId()));
+                withDankookUserService.recruitedCount(withDankookService.makeSingleDto(userId, study).getId()),
+                isApplied);
     }
 
     private Study findStudy(StudyRepository studyRepository, Long studyId, UserRole role) {

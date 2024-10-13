@@ -36,7 +36,10 @@ public class ResponseSingleStudyDto extends ResponseSingleWithDankookDto {
     @Schema(description = "모집된 사용자들")
     private final List<RecruitedUsersDto> recruitedUsers;
 
-    public ResponseSingleStudyDto(ResponseSingleWithDankookDto dto, Study study, int recruitedCount) {
+    @Schema(description = "내가 참여했는지 여부", example = "true")
+    private final boolean isApplied;
+
+    public ResponseSingleStudyDto(ResponseSingleWithDankookDto dto, Study study, int recruitedCount, boolean isApplied) {
         super(dto);
         this.title = study.getTitle();
         this.minStudentId = study.getMinStudentId();
@@ -48,5 +51,6 @@ public class ResponseSingleStudyDto extends ResponseSingleWithDankookDto {
         this.recruitedUsers = study.getUsers().stream()
                 .map(RecruitedUsersDto::new)
                 .collect(Collectors.toList());
+        this.isApplied = isApplied;
     }
 }

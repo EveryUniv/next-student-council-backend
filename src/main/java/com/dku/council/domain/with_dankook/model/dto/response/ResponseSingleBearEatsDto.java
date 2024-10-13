@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 @Getter
 public class ResponseSingleBearEatsDto extends ResponseSingleWithDankookDto {
 
+    @Schema(description = "제목", example = "제목")
+    private final String title;
+
     @Schema(description = "식당 이름", example = "피자헛")
     private final String restaurant;
 
@@ -31,8 +34,12 @@ public class ResponseSingleBearEatsDto extends ResponseSingleWithDankookDto {
     @Schema(description = "모집된 사용자들")
     private final List<RecruitedUsersDto> recruitedUsers;
 
-    public ResponseSingleBearEatsDto(ResponseSingleWithDankookDto dto, BearEats bearEats, int recruitedCount) {
+    @Schema(description = "내가 신청했는지 여부", example = "true")
+    private final boolean isApplied;
+
+    public ResponseSingleBearEatsDto(ResponseSingleWithDankookDto dto, BearEats bearEats, int recruitedCount, boolean isApplied) {
         super(dto);
+        this.title = bearEats.getTitle();
         this.restaurant = bearEats.getRestaurant();
         this.deliveryPlace = bearEats.getDeliveryPlace();
         this.deliveryTime = bearEats.getDeliveryTime().toString();
@@ -41,5 +48,6 @@ public class ResponseSingleBearEatsDto extends ResponseSingleWithDankookDto {
         this.recruitedUsers = bearEats.getUsers().stream()
                 .map(RecruitedUsersDto::new)
                 .collect(Collectors.toList());
+        this.isApplied = isApplied;
     }
 }

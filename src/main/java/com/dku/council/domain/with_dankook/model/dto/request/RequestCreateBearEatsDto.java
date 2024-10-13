@@ -16,6 +16,10 @@ import java.time.LocalDateTime;
 public class RequestCreateBearEatsDto extends RequestCreateWithDankookDto<BearEats>{
 
     @NotNull
+    @Schema(description = "title", example = "베어이츠 제목")
+    private final String title;
+
+    @NotNull
     @Schema(description = "음식점", example = "피자헛")
     private final String restaurant;
 
@@ -36,6 +40,7 @@ public class RequestCreateBearEatsDto extends RequestCreateWithDankookDto<BearEa
     public BearEats toEntity(User user) {
         return BearEats.builder()
                 .user(user)
+                .title(title)
                 .restaurant(restaurant)
                 .deliveryPlace(deliveryPlace)
                 .deliveryTime(deliveryTime)
