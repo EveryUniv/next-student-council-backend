@@ -23,6 +23,9 @@ public class BearEats extends WithDankook {
     private Long id;
 
     @NotNull
+    private String title;
+
+    @NotNull
     private String restaurant;
 
     @NotNull
@@ -37,8 +40,9 @@ public class BearEats extends WithDankook {
 
 
     @Builder
-    private BearEats(User user, String restaurant, String deliveryPlace, LocalDateTime deliveryTime, String content) {
+    private BearEats(User user, String title, String restaurant, String deliveryPlace, LocalDateTime deliveryTime, String content) {
         super(user);
+        this.title = title;
         this.restaurant = restaurant;
         this.deliveryPlace = deliveryPlace;
         this.deliveryTime = deliveryTime;

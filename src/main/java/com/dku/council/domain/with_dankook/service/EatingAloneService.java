@@ -15,6 +15,7 @@ import com.dku.council.domain.with_dankook.model.dto.request.RequestCreateEating
 import com.dku.council.domain.with_dankook.model.dto.response.ResponseSingleEatingAloneDto;
 import com.dku.council.domain.with_dankook.model.entity.WithDankookUser;
 import com.dku.council.domain.with_dankook.model.entity.type.EatingAlone;
+import com.dku.council.domain.with_dankook.repository.spec.WithDankookSpec;
 import com.dku.council.domain.with_dankook.repository.with_dankook.EatingAloneRepository;
 import com.dku.council.domain.with_dankook.repository.WithDankookUserRepository;
 import com.dku.council.global.auth.role.UserRole;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -85,12 +87,16 @@ public class EatingAloneService {
         return result;
     }
 
-    public Page<SummarizedEatingAloneDto> list(Pageable pageable, int bodySize) {
-        Page<EatingAlone> result = eatingAloneRepository.findAll(pageable);
+    @Transactional(readOnly = true)
+    public Page<SummarizedEatingAloneDto> list(String keyword, Pageable pageable, int bodySize) {
+        Specification<EatingAlone> spec = WithDankookSpec.withTitleOrBody(keyword);
+        spec = spec.and(WithDankookSpec.withActive());
+        Page<EatingAlone> result = eatingAloneRepository.findAll(spec, pageable);
         return result.map(eatingAlone -> new SummarizedEatingAloneDto(withDankookService.makeListDto(bodySize, eatingAlone), eatingAlone,
                 withDankookUserService.recruitedCount(withDankookService.makeListDto(bodySize, eatingAlone).getId())));
     }
 
+    @Transactional(readOnly = true)
     public Page<SummarizedEatingAloneDto> listMyPosts(Long userId, Pageable pageable) {
         return eatingAloneRepository.findAllEatingAloneByUserId(userId, pageable)
                 .map(eatingAlone -> new SummarizedEatingAloneDto(withDankookService.makeListDto(50, eatingAlone), eatingAlone,
@@ -115,8 +121,10 @@ public class EatingAloneService {
 
     public ResponseSingleEatingAloneDto findOne(Long id, Long userId, UserRole role) {
         EatingAlone eatingAlone = findEatingAlone(eatingAloneRepository, id, role);
+        boolean isApplied = withDankookUserRepository.isExistsByWithDankookIdAndUserId(eatingAlone.getId(), userId)
+                .isPresent();
         return new ResponseSingleEatingAloneDto(withDankookService.makeSingleDto(userId, eatingAlone), eatingAlone,
-                withDankookUserService.recruitedCount(withDankookService.makeSingleDto(userId, eatingAlone).getId()));
+                withDankookUserService.recruitedCount(withDankookService.makeSingleDto(userId, eatingAlone).getId()), isApplied);
     }
 
     private EatingAlone findEatingAlone(EatingAloneRepository eatingAloneRepository, Long id, UserRole role) {

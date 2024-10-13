@@ -15,6 +15,7 @@ import com.dku.council.domain.with_dankook.model.dto.request.RequestCreateBearEa
 import com.dku.council.domain.with_dankook.model.dto.response.ResponseSingleBearEatsDto;
 import com.dku.council.domain.with_dankook.model.entity.WithDankookUser;
 import com.dku.council.domain.with_dankook.model.entity.type.BearEats;
+import com.dku.council.domain.with_dankook.repository.spec.WithDankookSpec;
 import com.dku.council.domain.with_dankook.repository.with_dankook.BearEatsRepository;
 import com.dku.council.domain.with_dankook.repository.WithDankookUserRepository;
 import com.dku.council.global.auth.role.UserRole;
@@ -23,9 +24,11 @@ import com.dku.council.global.error.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +56,7 @@ public class BearEatsService {
     private final UserRepository userRepository;
     private final PostTimeMemoryRepository postTimeMemoryRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final MessageSource messageSource;
 
     private final Clock clock;
 
@@ -84,7 +88,9 @@ public class BearEatsService {
         return result;
     }
 
-    public Page<SummarizedBearEatsDto> list(Pageable pageable, int bodySize) {
+    public Page<SummarizedBearEatsDto> list(String keyword, Pageable pageable, int bodySize) {
+        Specification<BearEats> spec = WithDankookSpec.withTitleOrBody(keyword);
+        spec = spec.and(WithDankookSpec.withActive());
         Page<BearEats> result = bearEatsRepository.findAll(pageable);
         return result.map((bearEats) -> new SummarizedBearEatsDto(withDankookService.makeListDto(bodySize, bearEats), bearEats,
                 withDankookuserSerivce.recruitedCount(withDankookService.makeListDto(bodySize, bearEats).getId())));
@@ -114,8 +120,10 @@ public class BearEatsService {
 
     public ResponseSingleBearEatsDto findOne(Long id, Long userId, UserRole role) {
         BearEats bearEats = findBearEats(bearEatsRepository, id, role);
+        boolean isApplied = withDankookUserRepository.isExistsByWithDankookIdAndUserId(bearEats.getId(), userId)
+                .isPresent();
         return new ResponseSingleBearEatsDto(withDankookService.makeSingleDto(userId, bearEats), bearEats,
-                withDankookuserSerivce.recruitedCount(withDankookService.makeSingleDto(userId, bearEats).getId()));
+                withDankookuserSerivce.recruitedCount(withDankookService.makeSingleDto(userId, bearEats).getId()), isApplied);
     }
 
     private BearEats findBearEats(BearEatsRepository bearEatsRepository, Long id, UserRole role) {
