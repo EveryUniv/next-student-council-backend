@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class SummarizedEatingAlonePossibleReviewDto {
     @NotNull
     @Schema(description = "게시글 id", example = "5")
-    private final Long withDankookId;
+    private final Long id;
 
     @Schema(description = "제목", example = "게시글 제목")
     private final String title;
@@ -26,7 +26,7 @@ public class SummarizedEatingAlonePossibleReviewDto {
     private final List<RecruitedUsersDto> targetUserList;
 
     public SummarizedEatingAlonePossibleReviewDto(EatingAlone eatingAlone, Long writerId) {
-        this.withDankookId = eatingAlone.getId();
+        this.id = eatingAlone.getId();
         this.title = eatingAlone.getTitle();
         this.body = eatingAlone.getContent();
         this.targetUserList = eatingAlone.getUsers().stream()

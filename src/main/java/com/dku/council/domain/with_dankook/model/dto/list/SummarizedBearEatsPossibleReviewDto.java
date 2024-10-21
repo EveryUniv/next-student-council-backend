@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class SummarizedBearEatsPossibleReviewDto {
     @NotNull
     @Schema(description = "게시글 id", example = "5")
-    private final Long withDankookId;
+    private final Long id;
 
     @Schema(description = "음식점 이름", example = "체리스시")
     private final String restaurant;
@@ -30,7 +30,7 @@ public class SummarizedBearEatsPossibleReviewDto {
     private final List<RecruitedUsersDto> targetUserList;
 
     public SummarizedBearEatsPossibleReviewDto(BearEats bearEats, Long writerId) {
-        this.withDankookId = bearEats.getId();
+        this.id = bearEats.getId();
         this.restaurant = bearEats.getRestaurant();
         this.deliveryPlace = bearEats.getDeliveryPlace();
         this.deliveryTime = bearEats.getDeliveryTime();
