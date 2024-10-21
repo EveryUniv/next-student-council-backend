@@ -1,5 +1,6 @@
 package com.dku.council.domain.with_dankook.model.dto.response;
 
+import com.dku.council.domain.with_dankook.model.WithDankookStatus;
 import com.dku.council.domain.with_dankook.model.dto.RecruitedUsersDto;
 import com.dku.council.domain.with_dankook.model.entity.type.BearEats;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -34,6 +35,9 @@ public class ResponseSingleBearEatsDto extends ResponseSingleWithDankookDto {
     @Schema(description = "모집된 사용자들")
     private final List<RecruitedUsersDto> recruitedUsers;
 
+    @Schema(description = "카카오 오픈채팅방 URL")
+    private final String kakaoOpenChatLink;
+
     @Schema(description = "내가 신청했는지 여부", example = "true")
     private final boolean isApplied;
 
@@ -48,6 +52,7 @@ public class ResponseSingleBearEatsDto extends ResponseSingleWithDankookDto {
         this.recruitedUsers = bearEats.getUsers().stream()
                 .map(RecruitedUsersDto::new)
                 .collect(Collectors.toList());
+        this.kakaoOpenChatLink = (bearEats.getStatus().equals(WithDankookStatus.CLOSED.toString())) ? bearEats.getKakaoOpenChatLink() : null;
         this.isApplied = isApplied;
     }
 }

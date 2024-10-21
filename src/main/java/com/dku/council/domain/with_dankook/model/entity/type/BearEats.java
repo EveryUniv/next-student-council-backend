@@ -35,17 +35,21 @@ public class BearEats extends WithDankook {
     private LocalDateTime deliveryTime;
 
     @NotNull
+    private String kakaoOpenChatLink;
+
+    @NotNull
     @Lob
     private String content;
 
 
     @Builder
-    private BearEats(User user, String title, String restaurant, String deliveryPlace, LocalDateTime deliveryTime, String content) {
+    private BearEats(User user, String title, String restaurant, String deliveryPlace, LocalDateTime deliveryTime, String content, String kakaoOpenChatLink) {
         super(user);
         this.title = title;
         this.restaurant = restaurant;
         this.deliveryPlace = deliveryPlace;
         this.deliveryTime = deliveryTime;
+        this.kakaoOpenChatLink = kakaoOpenChatLink;
         this.content = content;
     }
     @Override

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class SummarizedRoommatePossibleReviewDto {
     @NotNull
     @Schema(description = "게시글 id", example = "5")
-    private final Long withDankookId;
+    private final Long id;
 
     @NotNull
     @Schema(description = "제목", example = "게시글 제목")
@@ -32,7 +32,7 @@ public class SummarizedRoommatePossibleReviewDto {
     private final List<RecruitedUsersDto> targetUserList;
 
     public SummarizedRoommatePossibleReviewDto(Roommate roommate, Long writerId) {
-        this.withDankookId = roommate.getId();
+        this.id = roommate.getId();
         this.title = roommate.getTitle();
         this.livingPlace = roommate.getLivingPlace();
         this.residenceDuration = roommate.getResidenceDuration();

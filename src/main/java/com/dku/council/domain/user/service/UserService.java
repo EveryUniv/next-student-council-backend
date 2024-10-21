@@ -1,7 +1,6 @@
 package com.dku.council.domain.user.service;
 
 import com.dku.council.domain.user.exception.AlreadyNicknameException;
-import com.dku.council.domain.user.exception.DkuAuthNotRefreshedException;
 import com.dku.council.domain.user.exception.RequiredDkuUpdateException;
 import com.dku.council.domain.user.exception.WrongPasswordException;
 import com.dku.council.domain.user.model.UserStatus;

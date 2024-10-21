@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class SummarizedStudyPossibleReviewDto {
     @NotNull
     @Schema(description = "게시글 id", example = "5")
-    private final Long withDankookId;
+    private final Long id;
 
     @Schema(description = "제목", example = "게시글 제목")
     private final String title;
@@ -22,13 +22,17 @@ public class SummarizedStudyPossibleReviewDto {
     @Schema(description = "내용", example = "게시글 본문")
     private final String body;
 
+    @Schema(description = "해시태그")
+    private final String tag;
+
     @Schema(description = "리뷰를 작성할 사용자들 리스트", example = "[1, 3, 4]")
     private final List<RecruitedUsersDto> targetUserList;
 
     public SummarizedStudyPossibleReviewDto(Study study, Long writerId) {
-        this.withDankookId = study.getId();
+        this.id = study.getId();
         this.title = study.getTitle();
         this.body = study.getContent();
+        this.tag = study.getTag().getName();
         this.targetUserList = study.getUsers().stream()
                 .filter(user -> !Objects.equals(user.getParticipant().getId(), writerId))
                 .map(RecruitedUsersDto::new)
