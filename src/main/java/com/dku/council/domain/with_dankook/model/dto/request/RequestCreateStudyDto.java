@@ -39,19 +39,25 @@ public class RequestCreateStudyDto extends RequestCreateWithDankookDto<Study> {
     @Schema(description = "본문", example = "내용")
     private final String body;
 
+    @NotNull
+    @Schema(description = "카카오톡 오픈채팅 링크", example = "https://open.kakao.com/o/gjgjgjgj")
+    private final String kakaoOpenChatLink;
+
     @JsonCreator
     public RequestCreateStudyDto (@JsonProperty("title") @NotBlank String title,
                                   @JsonProperty("minStudentId") @NotBlank int minStudentId,
                                   @JsonProperty("startTime") @NotBlank LocalDateTime startTime,
                                   @JsonProperty("endTime") @NotBlank LocalDateTime endTime,
                                   @JsonProperty("tag") String tag,
-                                  @JsonProperty("content") @NotBlank String body) {
+                                  @JsonProperty("content") @NotBlank String body,
+                                  @JsonProperty("kakaoOpenChatLink") @NotBlank String kakaoOpenChatLink) {
         this.title = title;
         this.minStudentId = minStudentId;
         this.startTime = startTime;
         this.endTime = endTime;
         this.tag = tag;
         this.body = body;
+        this.kakaoOpenChatLink = kakaoOpenChatLink;
     }
 
     public Study toEntity(User user) {
@@ -62,6 +68,7 @@ public class RequestCreateStudyDto extends RequestCreateWithDankookDto<Study> {
                 .endTime(endTime)
                 .content(body)
                 .user(user)
+                .kakaoOpenChatLink(kakaoOpenChatLink)
                 .build();
     }
 }

@@ -36,6 +36,10 @@ public class RequestCreateBearEatsDto extends RequestCreateWithDankookDto<BearEa
     @Schema(description = "본문", example = "내용")
     private final String body;
 
+    @NotNull
+    @Schema(description = "카카오톡 오픈채팅 링크", example = "https://open.kakao.com/o/gjgjgjgj")
+    private final String kakaoOpenChatLink;
+
     @Override
     public BearEats toEntity(User user) {
         return BearEats.builder()
@@ -45,6 +49,7 @@ public class RequestCreateBearEatsDto extends RequestCreateWithDankookDto<BearEa
                 .deliveryPlace(deliveryPlace)
                 .deliveryTime(deliveryTime)
                 .content(body)
+                .kakaoOpenChatLink(kakaoOpenChatLink)
                 .build();
     }
 }

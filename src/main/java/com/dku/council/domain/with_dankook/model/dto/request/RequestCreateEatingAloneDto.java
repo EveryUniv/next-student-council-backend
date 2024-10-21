@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @RequiredArgsConstructor
@@ -20,12 +21,17 @@ public class RequestCreateEatingAloneDto extends RequestCreateWithDankookDto<Eat
     @Schema(description = "본문", example = "내용")
     private final String body;
 
+    @NotNull
+    @Schema(description = "카카오톡 오픈채팅 링크", example = "https://open.kakao.com/o/gjgjgjgj")
+    private final String kakaoOpenChatLink;
+
     @Override
     public EatingAlone toEntity(User user) {
         return EatingAlone.builder()
                 .user(user)
                 .title(title)
                 .content(body)
+                .kakaoOpenChatLink(kakaoOpenChatLink)
                 .build();
     }
 }

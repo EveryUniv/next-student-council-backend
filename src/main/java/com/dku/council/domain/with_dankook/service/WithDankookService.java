@@ -175,7 +175,7 @@ public class WithDankookService<E extends WithDankook> {
         }
 
         if (withDankookUserService.recruitedCount(withDankook.getId()) == 4) {
-            withDankook.markAsFull();
+            withDankook.markAsClosed();
         }
     }
     /**
