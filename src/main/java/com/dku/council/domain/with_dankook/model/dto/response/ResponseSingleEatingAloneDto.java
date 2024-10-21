@@ -1,5 +1,6 @@
 package com.dku.council.domain.with_dankook.model.dto.response;
 
+import com.dku.council.domain.with_dankook.model.WithDankookStatus;
 import com.dku.council.domain.with_dankook.model.dto.RecruitedUsersDto;
 import com.dku.council.domain.with_dankook.model.entity.type.EatingAlone;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,6 +24,9 @@ public class ResponseSingleEatingAloneDto extends ResponseSingleWithDankookDto {
     @Schema(description = "모집된 사용자들")
     private final List<RecruitedUsersDto> recruitedUsers;
 
+    @Schema(description = "카카오 오픈채팅방 URL")
+    private final String kakaoOpenChatLink;
+
     @Schema(description = "내가 참여했는지 여부", example = "true")
     private final boolean isApplied;
 
@@ -34,6 +38,8 @@ public class ResponseSingleEatingAloneDto extends ResponseSingleWithDankookDto {
         this.recruitedUsers = eatingAlone.getUsers().stream()
                 .map(RecruitedUsersDto::new)
                 .collect(Collectors.toList());
+        this.kakaoOpenChatLink = (eatingAlone.getStatus().equals(WithDankookStatus.CLOSED.toString())) ? eatingAlone.getKakaoOpenChatLink() : null;
         this.isApplied = isApplied;
+
     }
 }
