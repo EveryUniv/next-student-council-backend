@@ -17,6 +17,9 @@ public class SummarizedBearEatsPossibleReviewDto {
     @Schema(description = "게시글 id", example = "5")
     private final Long id;
 
+    @Schema(description = "제목")
+    private final String title;
+
     @Schema(description = "음식점 이름", example = "체리스시")
     private final String restaurant;
 
@@ -26,14 +29,19 @@ public class SummarizedBearEatsPossibleReviewDto {
     @Schema(description = "배달 주문 시간", example = "2024-01-01 12:30:00")
     private final LocalDateTime deliveryTime;
 
+    @Schema(description = "내용")
+    private final String body;
+
     @Schema(description = "리뷰를 작성할 사용자들 리스트", example = "[1, 3, 4]")
     private final List<RecruitedUsersDto> targetUserList;
 
     public SummarizedBearEatsPossibleReviewDto(BearEats bearEats, Long writerId) {
         this.id = bearEats.getId();
+        this.title = bearEats.getTitle();
         this.restaurant = bearEats.getRestaurant();
         this.deliveryPlace = bearEats.getDeliveryPlace();
         this.deliveryTime = bearEats.getDeliveryTime();
+        this.body = bearEats.getContent();
         this.targetUserList = bearEats.getUsers().stream()
                 .filter(user -> !Objects.equals(user.getParticipant().getId(), writerId))
                 .map(RecruitedUsersDto::new)
