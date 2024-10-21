@@ -45,8 +45,11 @@ public class Study extends WithDankook {
     @Lob
     private String content;
 
+    @NotNull
+    private String kakaoOpenChatLink;
+
     @Builder
-    private Study(User user, String title, int minStudentId, LocalDateTime startTime, LocalDateTime endTime, StudyTag tag, String content) {
+    private Study(User user, String title, int minStudentId, LocalDateTime startTime, LocalDateTime endTime, StudyTag tag, String content, String kakaoOpenChatLink) {
         super(user);
         this.title = title;
         this.minStudentId = minStudentId;
@@ -54,6 +57,7 @@ public class Study extends WithDankook {
         this.endTime = endTime;
         this.tag = tag;
         this.content = content;
+        this.kakaoOpenChatLink = kakaoOpenChatLink;
     }
     @Override
     public String getDisplayingUsername() {

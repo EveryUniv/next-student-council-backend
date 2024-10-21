@@ -1,5 +1,6 @@
 package com.dku.council.domain.with_dankook.repository.spec;
 
+import com.dku.council.domain.with_dankook.model.MyWithDankookStatus;
 import com.dku.council.domain.with_dankook.model.WithDankookStatus;
 import com.dku.council.domain.with_dankook.model.entity.WithDankook;
 import org.springframework.data.jpa.domain.Specification;
@@ -38,4 +39,12 @@ public class WithDankookSpec {
         };
     }
 
+    public static Specification<WithDankook> withStatus(MyWithDankookStatus status) {
+        if (status == null) {
+            return Specification.where(null);
+        }
+
+        return (root, query, builder) ->
+                builder.equal(root.get("status"), status);
+    }
 }

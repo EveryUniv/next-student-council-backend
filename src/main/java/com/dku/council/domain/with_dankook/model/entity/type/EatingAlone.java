@@ -26,11 +26,15 @@ public class EatingAlone extends WithDankook {
     @Lob
     private String content;
 
+    @NotNull
+    private String kakaoOpenChatLink;
+
     @Builder
-    private EatingAlone(User user, String title, String content) {
+    private EatingAlone(User user, String title, String content, String kakaoOpenChatLink) {
         super(user);
         this.title = title;
         this.content = content;
+        this.kakaoOpenChatLink = kakaoOpenChatLink;
     }
 
     @Override
