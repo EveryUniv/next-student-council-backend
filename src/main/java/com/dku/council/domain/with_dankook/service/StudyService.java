@@ -83,6 +83,7 @@ public class StudyService {
                 .startTime(dto.getStartTime())
                 .endTime(dto.getEndTime())
                 .tag(studyTag)
+                .kakaoOpenChatLink(dto.getKakaoOpenChatLink())
                 .content(dto.getBody())
                 .build();
 
