@@ -8,6 +8,7 @@ import com.dku.council.domain.post.exception.PostCooltimeException;
 import com.dku.council.domain.post.repository.PostTimeMemoryRepository;
 import com.dku.council.domain.user.model.entity.User;
 import com.dku.council.domain.user.repository.UserRepository;
+import com.dku.council.domain.with_dankook.exception.InvalidTimeException;
 import com.dku.council.domain.with_dankook.exception.WithDankookNotFoundException;
 import com.dku.council.domain.with_dankook.model.dto.list.SummarizedBearEatsDto;
 import com.dku.council.domain.with_dankook.model.dto.list.SummarizedBearEatsPossibleReviewDto;
@@ -35,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -71,6 +73,7 @@ public class BearEatsService {
             throw new PostCooltimeException("bear-eats");
         }
 
+        checkTime(dto.getDeliveryTime());
         Long result = withDankookService.create(bearEatsRepository, userId, dto);
 
         WithDankookUser withDankookuser = WithDankookUser.builder()
@@ -86,6 +89,12 @@ public class BearEatsService {
 
         postTimeMemoryRepository.put(BEAR_EATS_KEY, userId, writeCooltime, now);
         return result;
+    }
+
+    private void checkTime(LocalDateTime deliveryTime) {
+        if (deliveryTime.isBefore(LocalDateTime.now(clock))) {
+            throw new InvalidTimeException();
+        }
     }
 
     public Page<SummarizedBearEatsDto> list(String keyword, Pageable pageable, int bodySize) {

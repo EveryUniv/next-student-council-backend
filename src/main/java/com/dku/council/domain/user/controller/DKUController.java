@@ -5,8 +5,10 @@ import com.dku.council.domain.user.model.dto.request.RequestDkuStudentDto;
 import com.dku.council.domain.user.model.dto.response.ResponseScrappedStudentInfoDto;
 import com.dku.council.domain.user.model.dto.response.ResponseVerifyStudentDto;
 import com.dku.council.domain.user.service.DKUAuthService;
+import com.dku.council.domain.user.service.UserService;
 import com.dku.council.global.auth.jwt.AppAuthentication;
 import com.dku.council.global.auth.role.UserAuth;
+import com.dku.council.global.model.dto.ResponseBooleanDto;
 import com.dku.council.infra.dku.service.DkuAuthBatchService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,17 @@ public class DKUController {
 
     private final DKUAuthService service;
     private final DkuAuthBatchService renewingAccountService;
+
+    /**
+     * 단국대학교 인증 확인
+     * <p>단국대학교 학생 인증이 되어 있는지 확인하기 위한 API 입니다.</p>
+     */
+    @GetMapping("/check")
+    @UserAuth
+    public ResponseBooleanDto checkDKUAuth(AppAuthentication auth) {
+        boolean result = service.checkDkuAuth(auth.getUserId());
+        return new ResponseBooleanDto(result);
+    }
 
     /**
      * 단국대학교 학생 인증
