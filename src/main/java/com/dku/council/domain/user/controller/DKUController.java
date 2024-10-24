@@ -28,6 +28,7 @@ public class DKUController {
     /**
      * 단국대학교 인증 확인
      * <p>단국대학교 학생 인증이 되어 있는지 확인하기 위한 API 입니다.</p>
+     * <p>학생 인증이 되어있으면 true, 안되어있으면 false를 반환합니다.</p>
      */
     @GetMapping("/check")
     @UserAuth
