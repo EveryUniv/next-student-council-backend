@@ -1,7 +1,9 @@
 package com.dku.council.domain.user.service;
 
 import com.dku.council.domain.user.exception.AlreadyStudentIdException;
+import com.dku.council.domain.user.exception.DkuAuthNotRefreshedException;
 import com.dku.council.domain.user.exception.NotDKUAuthorizedException;
+import com.dku.council.domain.user.exception.RequiredDkuUpdateException;
 import com.dku.council.domain.user.model.DkuUserInfo;
 import com.dku.council.domain.user.model.dto.request.RequestDkuStudentDto;
 import com.dku.council.domain.user.model.dto.response.ResponseScrappedStudentInfoDto;
@@ -129,8 +131,13 @@ public class DKUAuthService {
     }
 
     public boolean checkDkuAuth(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new)
-                .isDkuChecked();
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (user.isDkuChecked()) {
+            return true;
+        } else {
+            throw new RequiredDkuUpdateException();
+        }
     }
 }
