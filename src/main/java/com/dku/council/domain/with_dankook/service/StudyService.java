@@ -9,6 +9,7 @@ import com.dku.council.domain.studytag.repository.StudyTagRepository;
 import com.dku.council.domain.user.model.entity.User;
 import com.dku.council.domain.user.repository.UserRepository;
 import com.dku.council.domain.with_dankook.exception.InvalidMinStudentIdException;
+import com.dku.council.domain.with_dankook.exception.InvalidTimeException;
 import com.dku.council.domain.with_dankook.exception.StudyCooltimeException;
 import com.dku.council.domain.with_dankook.exception.WithDankookNotFoundException;
 import com.dku.council.domain.with_dankook.model.dto.list.SummarizedStudyDto;
@@ -37,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -73,6 +75,8 @@ public class StudyService {
             throw new StudyCooltimeException("study");
         }
 
+        checkTime(dto.getStartTime(), dto.getEndTime());
+
         // 게시글에 작성한 태그 등록
         StudyTag studyTag = retrieveStudyTag(dto.getTag());
 
@@ -83,6 +87,7 @@ public class StudyService {
                 .startTime(dto.getStartTime())
                 .endTime(dto.getEndTime())
                 .tag(studyTag)
+                .kakaoOpenChatLink(dto.getKakaoOpenChatLink())
                 .content(dto.getBody())
                 .build();
 
@@ -99,6 +104,15 @@ public class StudyService {
 
         withDankookMemoryRepository.put(STUDY_KEY, userId, writeCooltime, now);
         return result;
+    }
+
+    private void checkTime(LocalDateTime startTime, LocalDateTime endTime) {
+        if (startTime.isBefore(LocalDateTime.now())) {
+            throw new InvalidTimeException();
+        }
+        if (endTime.isBefore(startTime)) {
+            throw new InvalidTimeException();
+        }
     }
 
     private StudyTag retrieveStudyTag (String tagName) {

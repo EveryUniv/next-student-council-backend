@@ -127,4 +127,10 @@ public class DKUAuthService {
                     return entity;
                 });
     }
+
+    public boolean checkDkuAuth(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new)
+                .isDkuChecked();
+    }
 }
