@@ -47,3 +47,4 @@ api.pdf
 
 ### Firebase ###
 **/src/main/resources/**/**.json
+**/docker-compose.yml
