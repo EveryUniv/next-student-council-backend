@@ -25,6 +25,9 @@ public class ResponseSingleTradeDto extends ResponseSingleWithDankookDto {
     @Schema(description = "거래 장소", example = "단국대학교 정문")
     private final String tradePlace;
 
+    @Schema(description = "카카오 오픈채팅방 URL")
+    private final String kakaoOpenChatLink;
+
     @Schema(description = "이미지 목록")
     private final List<TradeImageDto> images;
 
@@ -37,6 +40,7 @@ public class ResponseSingleTradeDto extends ResponseSingleWithDankookDto {
         this.price = trade.getPrice();
         this.body = trade.getContent();
         this.tradePlace = trade.getTradePlace();
+        this.kakaoOpenChatLink = trade.getKakaoOpenChatLink();
         this.images = TradeImageDto.listOf(context, trade.getImages());
         this.status = messageSource.getMessage("withdankook.trade." + trade.getWithDankookStatus().name().toLowerCase(), null, LocaleContextHolder.getLocale());
     }

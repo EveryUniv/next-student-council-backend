@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.time.LocalDateTime;
 
@@ -27,16 +28,20 @@ public class SummarizedBearEatsDto extends SummarizedWithDankookDto {
     @Schema(description = "내용", example = "피자헛에서 피자를 시켜먹을 사람을 구합니다.")
     private final String body;
 
+    @Schema(description = "글 상태")
+    private final String status;
+
     @Schema(description = "모집된 인원", example = "1")
     private final int recruitedCount;
 
-    public SummarizedBearEatsDto(SummarizedWithDankookDto dto, BearEats bearEats, int recruitedCount) {
+    public SummarizedBearEatsDto(SummarizedWithDankookDto dto, BearEats bearEats, int recruitedCount, MessageSource messageSource) {
         super(dto);
         this.title = bearEats.getTitle();
         this.restaurant = bearEats.getRestaurant();
         this.deliveryPlace = bearEats.getDeliveryPlace();
         this.deliveryTime = bearEats.getDeliveryTime();
         this.body = bearEats.getContent();
+        this.status = messageSource.getMessage("withdankook." + bearEats.getStatus().toLowerCase(), new Object[]{}, LocaleContextHolder.getLocale());
         this.recruitedCount = recruitedCount;
     }
 

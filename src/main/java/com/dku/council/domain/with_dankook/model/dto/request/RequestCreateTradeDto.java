@@ -32,14 +32,18 @@ public class RequestCreateTradeDto extends RequestCreateWithDankookDto<Trade> {
     @Schema(description = "거래 장소", example = "단국대학교 정문")
     private final String tradePlace;
 
+    @NotBlank
+    private final String kakaoOpenChatLink;
+
     @Schema(description = "이미지 파일 목록")
     private final List<MultipartFile> images;
 
-    public RequestCreateTradeDto(@NotBlank String title, @NotBlank int price, @NotBlank String body, @NotBlank String tradePlace, List<MultipartFile> images) {
+    public RequestCreateTradeDto(@NotBlank String title, @NotBlank int price, @NotBlank String body, @NotBlank String tradePlace, List<MultipartFile> images, String kakaoOpenChatLink) {
         this.title = title;
         this.price = price;
         this.body = body;
         this.tradePlace = tradePlace;
+        this.kakaoOpenChatLink = kakaoOpenChatLink;
         this.images = Objects.requireNonNullElseGet(images, ArrayList::new);
     }
 
@@ -49,6 +53,7 @@ public class RequestCreateTradeDto extends RequestCreateWithDankookDto<Trade> {
                 .price(price)
                 .content(body)
                 .tradePlace(tradePlace)
+                .kakaoOpenChatLink(kakaoOpenChatLink)
                 .user(user)
                 .build();
     }

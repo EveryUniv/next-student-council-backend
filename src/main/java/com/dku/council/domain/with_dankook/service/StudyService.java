@@ -8,10 +8,7 @@ import com.dku.council.domain.studytag.model.entity.StudyTag;
 import com.dku.council.domain.studytag.repository.StudyTagRepository;
 import com.dku.council.domain.user.model.entity.User;
 import com.dku.council.domain.user.repository.UserRepository;
-import com.dku.council.domain.with_dankook.exception.InvalidMinStudentIdException;
-import com.dku.council.domain.with_dankook.exception.InvalidTimeException;
-import com.dku.council.domain.with_dankook.exception.StudyCooltimeException;
-import com.dku.council.domain.with_dankook.exception.WithDankookNotFoundException;
+import com.dku.council.domain.with_dankook.exception.*;
 import com.dku.council.domain.with_dankook.model.dto.list.SummarizedStudyDto;
 import com.dku.council.domain.with_dankook.model.dto.list.SummarizedStudyPossibleReviewDto;
 import com.dku.council.domain.with_dankook.model.dto.request.RequestCreateStudyDto;
@@ -28,6 +25,7 @@ import com.dku.council.global.error.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +55,7 @@ public class StudyService {
     private final StudyTagRepository studyTagRepository;
     private final WithDankookUserRepository withDankookUserRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final MessageSource messageSource;
 
     private final WithDankookService<Study> withDankookService;
     private final WithDankookUserService withDankookUserService;
@@ -127,12 +126,12 @@ public class StudyService {
     @Transactional(readOnly = true)
     public Page<SummarizedStudyDto> list(String keyword, Pageable pageable, int bodySize) {
         Specification<Study> spec = WithDankookSpec.withTitleOrBody(keyword);
-        spec = spec.and(WithDankookSpec.withActive());
         Page<Study> result = studyRepository.findAll(spec, pageable);
         return result.map((study) ->
                 new SummarizedStudyDto(withDankookService.makeListDto(bodySize, study),
                                         study,
-                                        withDankookUserService.recruitedCount(withDankookService.makeListDto(bodySize, study).getId())
+                                        withDankookUserService.recruitedCount(withDankookService.makeListDto(bodySize, study).getId()),
+                                        messageSource
                 ));
     }
 
@@ -144,7 +143,8 @@ public class StudyService {
         return result.map((study) ->
                 new SummarizedStudyDto(withDankookService.makeListDto(bodySize, study),
                         study,
-                        withDankookUserService.recruitedCount(withDankookService.makeListDto(bodySize, study).getId())
+                        withDankookUserService.recruitedCount(withDankookService.makeListDto(bodySize, study).getId()),
+                        messageSource
                 ));
     }
 
@@ -153,7 +153,8 @@ public class StudyService {
         return studyRepository.findAllStudyByUserId(userId, pageable)
                 .map(study -> new SummarizedStudyDto(withDankookService.makeListDto(50, study),
                         study,
-                        withDankookUserService.recruitedCount(withDankookService.makeListDto(50, study).getId())
+                        withDankookUserService.recruitedCount(withDankookService.makeListDto(50, study).getId()),
+                        messageSource
                 ));
     }
 
@@ -202,6 +203,8 @@ public class StudyService {
 
         if (study.getMinStudentId() < Integer.parseInt(String.valueOf(user.getYearOfAdmission()).substring(2))) {
             throw new InvalidMinStudentIdException();
+        } else if (study.getEndTime().isBefore(LocalDateTime.now())) {
+            throw new CannotEnterDueToTimeException();
         } else {
             withDankookService.enter(studyRepository, id, userId, userRole);
 
