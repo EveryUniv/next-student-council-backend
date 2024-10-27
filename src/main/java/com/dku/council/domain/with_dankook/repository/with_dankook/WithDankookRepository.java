@@ -17,18 +17,18 @@ public interface WithDankookRepository<T extends WithDankook> extends JpaReposit
     @Query("select w from WithDankook w " +
             "join fetch w.masterUser u " +
             "join fetch u.major " +
-            "where w.id=:id and w.withDankookStatus ='ACTIVE' ")
+            "where w.id=:id and w.withDankookStatus != 'DELETED_BY_ADMIN' ")
     Optional<T> findById(@Param("id") Long id);
     @Query("select w from WithDankook w " +
             "join fetch w.masterUser u " +
             "join fetch u.major " +
-            "where w.id=:withDankookId and (w.withDankookStatus='CLOSED' or w.withDankookStatus='ACTIVE')")
+            "where w.id=:withDankookId")
     Optional<T> findWithClosedById(@Param("withDankookId") Long withDankookId);
 
     @Query("select w from WithDankook w " +
             "join fetch w.masterUser u " +
             "join fetch u.major " +
-            "where w.id=:withDankookId and (w.withDankookStatus='CLOSED' or w.withDankookStatus='FULL' or w.withDankookStatus='ACTIVE')")
+            "where w.id=:withDankookId and w.withDankookStatus != 'DELETED_BY_ADMIN'")
     Optional<T> findWithNotDeletedById(@Param("withDankookId") Long withDankookId);
 
     @Query("select w from WithDankook w " +
