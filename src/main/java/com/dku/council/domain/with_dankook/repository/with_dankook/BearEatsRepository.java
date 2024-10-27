@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public interface BearEatsRepository extends WithDankookRepository<BearEats>{
 
     @Query("select b from BearEats b where b.masterUser.id = :userId and " +
@@ -20,4 +23,7 @@ public interface BearEatsRepository extends WithDankookRepository<BearEats>{
             "order by b.lastModifiedAt DESC ")
     Page<BearEats> findAllPossibleReviewPost(@Param("userId") Long userId,
                                           Pageable pageable);
+
+    @Query("select b from BearEats b where b.withDankookStatus = 'ACTIVE' and b.deliveryTime <= :expiredTime")
+    List<BearEats> findAllBearEatsWithExpiredTime(@Param("expiredTime") LocalDateTime expiredTime);
 }
