@@ -23,6 +23,7 @@ import com.dku.council.global.auth.role.UserRole;
 import com.dku.council.global.error.exception.NotGrantedException;
 import com.dku.council.global.error.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -39,6 +40,7 @@ public class WithDankookService<E extends WithDankook> {
     protected final UserRepository userRepository;
     protected final WithDankookUserRepository withDankookUserRepository;
     protected final WithDankookRepository<WithDankook> withDankookRepository;
+    protected final MessageSource messageSource;
 
     protected final LikeService likeService;
     protected final WithDankookUserService withDankookUserService;
@@ -116,7 +118,7 @@ public class WithDankookService<E extends WithDankook> {
             isLiked = likeService.isLiked(withDankook.getId(), userId, LikeTarget.WITH_DANKOOK);
         }
 
-        return new ResponseSingleWithDankookDto(likes, isMine, isLiked, withDankook);
+        return new ResponseSingleWithDankookDto(likes, isMine, isLiked, withDankook, messageSource);
     }
 
     /**

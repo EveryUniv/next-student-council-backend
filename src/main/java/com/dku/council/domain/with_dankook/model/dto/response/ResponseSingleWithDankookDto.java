@@ -3,6 +3,8 @@ package com.dku.council.domain.with_dankook.model.dto.response;
 import com.dku.council.domain.with_dankook.model.entity.WithDankook;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import java.time.LocalDateTime;
 
@@ -42,7 +44,7 @@ public class ResponseSingleWithDankookDto {
     @Schema(description = "게시판 상태 여부", example = "CLOSED")
     private final String status;
 
-    public ResponseSingleWithDankookDto(int likes, boolean isMine, boolean isLiked, WithDankook withDankook) {
+    public ResponseSingleWithDankookDto(int likes, boolean isMine, boolean isLiked, WithDankook withDankook, MessageSource messageSource) {
         this.id = withDankook.getId();
         this.author = withDankook.getDisplayingUsername();
         this.gender = withDankook.getMasterUser().getGender();
@@ -53,7 +55,7 @@ public class ResponseSingleWithDankookDto {
         this.likes = likes;
         this.isMine = isMine;
         this.isLiked = isLiked;
-        this.status = withDankook.getStatus();
+        this.status = messageSource.getMessage("withdankook." + withDankook.getStatus().toLowerCase(), new Object[]{}, LocaleContextHolder.getLocale());
     }
 
     public ResponseSingleWithDankookDto(ResponseSingleWithDankookDto copy) {
