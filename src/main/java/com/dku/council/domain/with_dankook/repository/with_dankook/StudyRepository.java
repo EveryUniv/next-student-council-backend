@@ -6,6 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 public interface StudyRepository extends WithDankookRepository<Study>{
 
     @Query("select s from Study s where s.masterUser.id = :userId and " +
@@ -20,4 +23,7 @@ public interface StudyRepository extends WithDankookRepository<Study>{
             "order by s.lastModifiedAt DESC ")
     Page<Study> findAllPossibleReviewPost(@Param("userId") Long userId,
                                           Pageable pageable);
+
+    @Query("select s from Study s where s.withDankookStatus = 'ACTIVE' and s.endTime <= :now")
+    List<Study> findAllStudyWithExpiredTime(LocalDateTime now);
 }
