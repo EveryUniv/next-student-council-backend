@@ -49,7 +49,7 @@ public class RequestCreateStudyDto extends RequestCreateWithDankookDto<Study> {
                                   @JsonProperty("startTime") @NotBlank LocalDateTime startTime,
                                   @JsonProperty("endTime") @NotBlank LocalDateTime endTime,
                                   @JsonProperty("tag") String tag,
-                                  @JsonProperty("content") @NotBlank String body,
+                                  @JsonProperty("body") @NotBlank String body,
                                   @JsonProperty("kakaoOpenChatLink") @NotBlank String kakaoOpenChatLink) {
         this.title = title;
         this.minStudentId = minStudentId;
