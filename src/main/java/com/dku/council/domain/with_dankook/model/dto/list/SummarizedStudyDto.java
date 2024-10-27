@@ -29,7 +29,7 @@ public class SummarizedStudyDto extends SummarizedWithDankookDto {
         this.title = study.getTitle();
         this.body = study.getContent();
         this.tag = study.getTag().getName();
-        this.status = messageSource.getMessage("witdankook." + study.getStatus().toLowerCase(), new Object[]{}, LocaleContextHolder.getLocale());
+        this.status = messageSource.getMessage("withdankook." + study.getStatus().toLowerCase(), new Object[]{}, LocaleContextHolder.getLocale());
         this.recruitedCount = recruitedCount;
     }
 }
