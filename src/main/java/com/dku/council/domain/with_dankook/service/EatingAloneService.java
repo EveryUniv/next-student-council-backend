@@ -24,6 +24,7 @@ import com.dku.council.global.error.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -56,6 +57,7 @@ public class EatingAloneService {
     private final PostTimeMemoryRepository postTimeMemoryRepository;
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final MessageSource messageSource;
 
     private final Clock clock;
 
@@ -90,17 +92,16 @@ public class EatingAloneService {
     @Transactional(readOnly = true)
     public Page<SummarizedEatingAloneDto> list(String keyword, Pageable pageable, int bodySize) {
         Specification<EatingAlone> spec = WithDankookSpec.withTitleOrBody(keyword);
-        spec = spec.and(WithDankookSpec.withActive());
         Page<EatingAlone> result = eatingAloneRepository.findAll(spec, pageable);
         return result.map(eatingAlone -> new SummarizedEatingAloneDto(withDankookService.makeListDto(bodySize, eatingAlone), eatingAlone,
-                withDankookUserService.recruitedCount(withDankookService.makeListDto(bodySize, eatingAlone).getId())));
+                withDankookUserService.recruitedCount(withDankookService.makeListDto(bodySize, eatingAlone).getId()), messageSource));
     }
 
     @Transactional(readOnly = true)
     public Page<SummarizedEatingAloneDto> listMyPosts(Long userId, Pageable pageable) {
         return eatingAloneRepository.findAllEatingAloneByUserId(userId, pageable)
                 .map(eatingAlone -> new SummarizedEatingAloneDto(withDankookService.makeListDto(50, eatingAlone), eatingAlone,
-                        withDankookUserService.recruitedCount(withDankookService.makeListDto(50, eatingAlone).getId())));
+                        withDankookUserService.recruitedCount(withDankookService.makeListDto(50, eatingAlone).getId()), messageSource));
     }
 
     @Transactional(readOnly = true)

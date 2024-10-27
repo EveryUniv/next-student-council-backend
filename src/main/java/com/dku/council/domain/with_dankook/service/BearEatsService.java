@@ -99,16 +99,15 @@ public class BearEatsService {
 
     public Page<SummarizedBearEatsDto> list(String keyword, Pageable pageable, int bodySize) {
         Specification<BearEats> spec = WithDankookSpec.withTitleOrBody(keyword);
-        spec = spec.and(WithDankookSpec.withActive());
-        Page<BearEats> result = bearEatsRepository.findAll(pageable);
+        Page<BearEats> result = bearEatsRepository.findAll(spec, pageable);
         return result.map((bearEats) -> new SummarizedBearEatsDto(withDankookService.makeListDto(bodySize, bearEats), bearEats,
-                withDankookuserSerivce.recruitedCount(withDankookService.makeListDto(bodySize, bearEats).getId())));
+                withDankookuserSerivce.recruitedCount(withDankookService.makeListDto(bodySize, bearEats).getId()), messageSource));
     }
 
     public Page<SummarizedBearEatsDto> listMyPosts(Long userId, Pageable pageable) {
         return bearEatsRepository.findAllBearEatsByUserId(userId, pageable)
                 .map(bearEats -> new SummarizedBearEatsDto(withDankookService.makeListDto(50, bearEats), bearEats,
-                        withDankookuserSerivce.recruitedCount(withDankookService.makeListDto(50, bearEats).getId())));
+                        withDankookuserSerivce.recruitedCount(withDankookService.makeListDto(50, bearEats).getId()), messageSource));
     }
 
     @Transactional(readOnly = true)
