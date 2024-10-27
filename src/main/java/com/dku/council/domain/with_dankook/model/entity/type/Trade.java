@@ -36,16 +36,20 @@ public class Trade extends WithDankook {
     @NotNull
     private String tradePlace;
 
+    @NotNull
+    private String kakaoOpenChatLink;
+
     @OneToMany(mappedBy = "trade", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<TradeImage> images = new ArrayList<>();
 
     @Builder
-    private Trade(User user, String title, int price, String content, String tradePlace) {
+    private Trade(User user, String title, int price, String content, String tradePlace, String kakaoOpenChatLink) {
         super(user);
         this.title = title;
         this.price = price;
         this.content = content;
         this.tradePlace = tradePlace;
+        this.kakaoOpenChatLink = kakaoOpenChatLink;
     }
 
     @Override

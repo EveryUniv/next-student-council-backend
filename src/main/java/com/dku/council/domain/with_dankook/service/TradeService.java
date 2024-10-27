@@ -78,6 +78,7 @@ public class TradeService {
                 .price(dto.getPrice())
                 .content(dto.getBody())
                 .tradePlace(dto.getTradePlace())
+                .kakaoOpenChatLink(dto.getKakaoOpenChatLink())
                 .build();
 
         attachImages(trade, dto.getImages());
@@ -120,7 +121,6 @@ public class TradeService {
     @Transactional(readOnly = true)
     public Page<SummarizedTradeDto> list(String keyword, Pageable pageable, int bodySize) {
         Specification<Trade> spec = WithDankookSpec.withTitleOrBody(keyword);
-        spec = spec.and(WithDankookSpec.withActive());
         Page<Trade> result = tradeRepository.findAll(spec, pageable);
         return result.map((trade) ->
                 new SummarizedTradeDto(withDankookService.makeListDto(bodySize, trade), trade, objectUploadContext, messageSource));
