@@ -3,6 +3,7 @@ package com.dku.council.domain.with_dankook.repository.spec;
 import com.dku.council.domain.with_dankook.model.MyWithDankookStatus;
 import com.dku.council.domain.with_dankook.model.WithDankookStatus;
 import com.dku.council.domain.with_dankook.model.entity.WithDankook;
+import com.dku.council.domain.with_dankook.model.entity.type.BearEats;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.JoinType;
@@ -46,5 +47,12 @@ public class WithDankookSpec {
 
         return (root, query, builder) ->
                 builder.equal(root.get("status"), status);
+    }
+
+    public static <T extends WithDankook> Specification<T> withNotDeleted() {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.and(
+                criteriaBuilder.notEqual(root.get("withDankookStatus"), WithDankookStatus.DELETED),
+                criteriaBuilder.notEqual(root.get("withDankookStatus"), WithDankookStatus.DELETED_BY_ADMIN)
+        );
     }
 }
