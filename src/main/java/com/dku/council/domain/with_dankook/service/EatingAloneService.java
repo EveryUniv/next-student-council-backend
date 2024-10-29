@@ -92,6 +92,7 @@ public class EatingAloneService {
     @Transactional(readOnly = true)
     public Page<SummarizedEatingAloneDto> list(String keyword, Pageable pageable, int bodySize) {
         Specification<EatingAlone> spec = WithDankookSpec.withTitleOrBody(keyword);
+        spec = spec.and(WithDankookSpec.withNotDeleted());
         Page<EatingAlone> result = eatingAloneRepository.findAll(spec, pageable);
         return result.map(eatingAlone -> new SummarizedEatingAloneDto(withDankookService.makeListDto(bodySize, eatingAlone), eatingAlone,
                 withDankookUserService.recruitedCount(withDankookService.makeListDto(bodySize, eatingAlone).getId()), messageSource));

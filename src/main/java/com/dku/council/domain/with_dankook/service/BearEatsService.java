@@ -99,6 +99,7 @@ public class BearEatsService {
 
     public Page<SummarizedBearEatsDto> list(String keyword, Pageable pageable, int bodySize) {
         Specification<BearEats> spec = WithDankookSpec.withTitleOrBody(keyword);
+        spec = spec.and(WithDankookSpec.withNotDeleted());
         Page<BearEats> result = bearEatsRepository.findAll(spec, pageable);
         return result.map((bearEats) -> new SummarizedBearEatsDto(withDankookService.makeListDto(bodySize, bearEats), bearEats,
                 withDankookuserSerivce.recruitedCount(withDankookService.makeListDto(bodySize, bearEats).getId()), messageSource));
