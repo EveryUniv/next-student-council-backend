@@ -126,6 +126,7 @@ public class StudyService {
     @Transactional(readOnly = true)
     public Page<SummarizedStudyDto> list(String keyword, Pageable pageable, int bodySize) {
         Specification<Study> spec = WithDankookSpec.withTitleOrBody(keyword);
+        spec = spec.and(WithDankookSpec.withNotDeleted());
         Page<Study> result = studyRepository.findAll(spec, pageable);
         return result.map((study) ->
                 new SummarizedStudyDto(withDankookService.makeListDto(bodySize, study),
